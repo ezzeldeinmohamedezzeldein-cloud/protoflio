@@ -1,0 +1,4367 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liver Cancer Detection AI</title>
+    <link rel="icon" href="./styleimages/logo.avif" type="image/x-icon" />
+
+    <!-- Modern Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* Basic Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      /* Body Styling - Enhanced dark theme with gradient */
+      body {
+        background: linear-gradient(135deg, #0a0a0a, #121212, #1a1a1a);
+        color: #e0e0e0;
+        line-height: 1.8;
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* RTL Support */
+      html[dir="rtl"] body {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      html[dir="rtl"] h1,
+      html[dir="rtl"] h2,
+      html[dir="rtl"] h3 {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      html[dir="rtl"] .text-container {
+        text-align: right;
+      }
+
+      html[dir="rtl"] .advice-list li {
+        padding-right: 35px;
+        padding-left: 0;
+      }
+
+      html[dir="rtl"] .advice-list li::before {
+        right: 0;
+        left: auto;
+      }
+
+      html[dir="rtl"] .advice-list li:hover {
+        transform: translateX(-5px);
+      }
+
+      html[dir="rtl"] nav .right {
+        flex-direction: row-reverse;
+      }
+
+      html[dir="rtl"] .stat-card .icon {
+        left: 15px;
+        right: auto;
+      }
+
+      /* Enhanced Animated Background with Hexagons */
+      .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 188, 212, 0.05) 0%,
+          transparent 70%
+        );
+      }
+
+      .hexagon {
+        position: absolute;
+        width: 100px;
+        height: 110px;
+        background: rgba(0, 188, 212, 0.03);
+        clip-path: polygon(
+          50% 0%,
+          100% 25%,
+          100% 75%,
+          50% 100%,
+          0% 75%,
+          0% 25%
+        );
+        animation: float 20s infinite linear;
+        box-shadow: 0 0 20px rgba(0, 188, 212, 0.1);
+        backdrop-filter: blur(2px);
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(100vh) rotate(0deg) scale(0.8);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.5;
+          transform: translateY(80vh) rotate(36deg) scale(1);
+        }
+        90% {
+          opacity: 0.5;
+          transform: translateY(20vh) rotate(324deg) scale(1);
+        }
+        100% {
+          transform: translateY(-200px) rotate(360deg) scale(0.8);
+          opacity: 0;
+        }
+      }
+
+      /* Enhanced Floating Particles */
+      .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background-color: rgba(0, 188, 212, 0.4);
+        border-radius: 50%;
+        animation: floatParticle 15s infinite linear;
+        box-shadow: 0 0 5px rgba(0, 188, 212, 0.4);
+      }
+
+      @keyframes floatParticle {
+        0% {
+          transform: translateY(100vh) translateX(0) scale(1);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+          transform: translateY(90vh) translateX(10px) scale(1.2);
+        }
+        50% {
+          transform: translateY(50vh) translateX(30px) scale(1.5);
+        }
+        90% {
+          opacity: 1;
+          transform: translateY(10vh) translateX(10px) scale(1.2);
+        }
+        100% {
+          transform: translateY(-20vh) translateX(20px) scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Enhanced Navbar Styling with glass effect */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.8);
+        padding: 15px 30px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
+          0 0 10px rgba(0, 188, 212, 0.2);
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: fadeInDown 0.8s ease-out 0.3s forwards;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      nav:hover {
+        background: rgba(10, 10, 10, 0.9);
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5),
+          0 0 15px rgba(0, 188, 212, 0.3);
+      }
+
+      @keyframes fadeInDown {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      nav .left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      nav img {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        filter: drop-shadow(0 0 8px rgba(0, 188, 212, 0.7));
+        animation: pulse 3s infinite;
+      }
+
+      nav img:hover {
+        transform: rotate(360deg) scale(1.1);
+      }
+
+      nav h1 {
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
+        letter-spacing: 1px;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      nav h1:hover {
+        letter-spacing: 1.5px;
+        text-shadow: 0 0 20px rgba(0, 188, 212, 0.8);
+        transform: scale(1.05);
+      }
+
+      nav .right {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      nav a {
+        color: #e6f4f1;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 600;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 8px 15px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      nav a::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 188, 212, 0.1),
+          transparent
+        );
+        transition: all 0.5s ease;
+      }
+
+      nav a:hover::before {
+        left: 100%;
+      }
+
+      nav a.active {
+        color: #00bcd4;
+        background: rgba(0, 188, 212, 0.1);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #00bcd4;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      nav a:hover::after {
+        width: 80%;
+      }
+
+      nav a:hover {
+        color: #00bcd4;
+        background: rgba(0, 188, 212, 0.1);
+        transform: translateY(-2px);
+      }
+
+      /* Enhanced Language Switcher */
+      .lang-switcher {
+        position: relative;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+
+      .lang-btn {
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3),
+          0 0 10px rgba(0, 188, 212, 0.3);
+        font-size: 16px;
+        position: relative;
+        overflow: hidden;
+        animation: buttonGlow 3s infinite alternate;
+      }
+
+      @keyframes buttonGlow {
+        0% {
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3),
+            0 0 10px rgba(0, 188, 212, 0.3);
+        }
+        100% {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
+            0 0 20px rgba(0, 188, 212, 0.6);
+        }
+      }
+
+      .lang-btn::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3) 0%,
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        top: 0;
+        left: 0;
+      }
+
+      .lang-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.5);
+      }
+
+      .lang-btn:hover::before {
+        opacity: 1;
+        animation: ripple 0.8s linear;
+      }
+
+      @keyframes ripple {
+        0% {
+          transform: scale(0.8);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      .lang-btn:active {
+        transform: translateY(-2px);
+      }
+
+      .lang-btn i {
+        margin-right: 8px;
+        animation: spin 6s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Main Container */
+      .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        flex: 1;
+      }
+
+      /* Enhanced Section Styling with 3D effects */
+      section {
+        min-height: 80vh;
+        margin: 100px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        opacity: 0;
+        transform: translateY(50px);
+        perspective: 1000px;
+      }
+
+      section.in-view {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 1s cubic-bezier(0.34, 1.56, 0.64, 1),
+          transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      /* Enhanced zigzag layout for sections with 3D rotation */
+      section:nth-child(odd) .section-content {
+        flex-direction: row-reverse;
+        transform: rotateY(-5deg);
+      }
+
+      section:nth-child(even) .section-content {
+        flex-direction: row;
+        transform: rotateY(5deg);
+      }
+
+      section.in-view .section-content {
+        transform: rotateY(0);
+        transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .section-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        background: rgba(18, 18, 18, 0.7);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3),
+          0 0 30px rgba(0, 188, 212, 0.1);
+        overflow: hidden;
+        border: 1px solid rgba(0, 188, 212, 0.1);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+      }
+
+      .section-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(0, 188, 212, 0.05) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+
+      .section-content:hover {
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4),
+          0 0 30px rgba(0, 188, 212, 0.3);
+        border: 1px solid rgba(0, 188, 212, 0.4);
+      }
+
+      .text-container {
+        padding: 60px;
+        width: 50%;
+        position: relative;
+        z-index: 1;
+      }
+
+      .visual-container {
+        width: 50%;
+        height: 600px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Enhanced Section Heading Styles with animated underline */
+      h2 {
+        font-size: 42px;
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        margin-bottom: 30px;
+        font-weight: 800;
+        position: relative;
+        display: inline-block;
+        text-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        width: 0%;
+        height: 4px;
+        background: linear-gradient(90deg, #00bcd4, transparent);
+        bottom: -10px;
+        left: 0;
+        border-radius: 2px;
+        transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s;
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      section.in-view h2::after {
+        width: 60%;
+      }
+
+      html[dir="rtl"] h2::after {
+        left: auto;
+        right: 0;
+        background: linear-gradient(270deg, #00bcd4, transparent);
+      }
+
+      /* Enhanced Section Paragraphs with animated reveal */
+      .text-container p {
+        font-size: 18px;
+        color: #e0e0e0;
+        line-height: 1.8;
+        margin-bottom: 25px;
+        font-weight: 400;
+        position: relative;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      section.in-view .text-container p {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .text-container p:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+
+      .text-container p:nth-child(3) {
+        transition-delay: 0.4s;
+      }
+
+      .text-container p:nth-child(4) {
+        transition-delay: 0.6s;
+      }
+
+      .text-container p:nth-child(5) {
+        transition-delay: 0.8s;
+      }
+
+      /* Enhanced Section Divider Style with animated pulse */
+      .section-divider {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 80px 0;
+        opacity: 0;
+        transform: translateY(20px);
+        position: relative;
+      }
+
+      .section-divider.in-view {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      }
+
+      .section-divider::before,
+      .section-divider::after {
+        content: "";
+        flex: 1;
+        max-width: 30%;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 188, 212, 0.5),
+          transparent
+        );
+        margin: 0 20px;
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        animation: dividerGlow 3s infinite alternate;
+      }
+
+      @keyframes dividerGlow {
+        0% {
+          box-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+        }
+        100% {
+          box-shadow: 0 0 15px rgba(0, 188, 212, 0.6);
+        }
+      }
+
+      .section-divider .divider-content {
+        background: rgba(0, 188, 212, 0.1);
+        color: #00bcd4;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        animation: pulse 3s infinite;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 15px rgba(0, 188, 212, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
+        }
+      }
+
+      .section-divider .divider-content::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(0, 188, 212, 0.2) 0%,
+          transparent 70%
+        );
+        opacity: 0;
+        transform: scale(0.5);
+        transition: transform 0.6s ease, opacity 0.6s ease;
+      }
+
+      .section-divider:hover .divider-content::before {
+        opacity: 1;
+        transform: scale(1);
+        animation: rotate 10s linear infinite;
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ENHANCED STATISTICS SECTION with dynamic background */
+      #statistics .section-content {
+        background: linear-gradient(
+            135deg,
+            rgba(10, 10, 10, 0.9),
+            rgba(18, 18, 18, 0.8)
+          ),
+          url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="rgba(0,188,212,0.1)" stroke-width="1"/></svg>');
+        background-size: cover, 20px 20px;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        position: relative;
+      }
+
+      #statistics .section-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="rgba(0,188,212,0.05)" stroke-width="1" fill="none"/></svg>');
+        background-size: 150px 150px;
+        opacity: 0.5;
+        animation: backgroundMove 30s linear infinite;
+        pointer-events: none;
+      }
+
+      @keyframes backgroundMove {
+        0% {
+          background-position: 0 0;
+        }
+        100% {
+          background-position: 150px 150px;
+        }
+      }
+
+      /* Enhanced Stats Cards Grid with staggered animation */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-top: 40px;
+      }
+
+      .stat-card {
+        background: rgba(0, 188, 212, 0.1);
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        border-radius: 12px;
+        padding: 25px;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: cardFadeIn 0.5s ease forwards;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .stat-card:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .stat-card:nth-child(2) {
+        animation-delay: 0.3s;
+      }
+      .stat-card:nth-child(3) {
+        animation-delay: 0.5s;
+      }
+      .stat-card:nth-child(4) {
+        animation-delay: 0.7s;
+      }
+
+      @keyframes cardFadeIn {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at top right,
+          rgba(0, 188, 212, 0.2),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-15px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        border-color: rgba(0, 188, 212, 0.5);
+        z-index: 1;
+      }
+
+      .stat-card:hover::before {
+        opacity: 1;
+        animation: pulse-radial 2s infinite;
+      }
+
+      @keyframes pulse-radial {
+        0% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 0.7;
+        }
+        100% {
+          opacity: 0.3;
+        }
+      }
+
+      .stat-card h3 {
+        color: #00bcd4;
+        font-size: 22px;
+        margin-bottom: 15px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 700;
+        position: relative;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      .stat-card p {
+        color: #e0e0e0;
+        font-size: 16px;
+        margin-bottom: 0;
+        line-height: 1.6;
+        position: relative;
+      }
+
+      .stat-card .icon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+        color: rgba(0, 188, 212, 0.5);
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover .icon {
+        transform: scale(1.3) rotate(15deg);
+        color: rgba(0, 188, 212, 0.8);
+        text-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
+      }
+
+      /* Enhanced Advice Section List with animated icons */
+      .advice-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 30px 0;
+      }
+
+      .advice-list li {
+        margin-bottom: 20px;
+        position: relative;
+        padding-left: 35px;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      section.in-view .advice-list li {
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
+      .advice-list li:nth-child(1) {
+        transition-delay: 0.1s;
+      }
+      .advice-list li:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+      .advice-list li:nth-child(3) {
+        transition-delay: 0.3s;
+      }
+      .advice-list li:nth-child(4) {
+        transition-delay: 0.4s;
+      }
+      .advice-list li:nth-child(5) {
+        transition-delay: 0.5s;
+      }
+      .advice-list li:nth-child(6) {
+        transition-delay: 0.6s;
+      }
+
+      .advice-list li::before {
+        content: "\f058";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        color: #00bcd4;
+        font-size: 20px;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .advice-list li:hover {
+        transform: translateX(5px);
+        color: #00bcd4;
+      }
+
+      .advice-list li:hover::before {
+        transform: scale(1.2);
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      /* Enhanced Footer Styling with animated background */
+      footer {
+        background: rgba(10, 10, 10, 0.9);
+        color: #e0e0e0;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 16px;
+        border-top: 3px solid #00bcd4;
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s ease-out 1.5s forwards;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 188, 212, 0.05) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+        animation: pulse-radial 5s infinite;
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      footer p {
+        margin: 10px 0;
+        color: #e0e0e0;
+        position: relative;
+        z-index: 1;
+      }
+
+      footer a {
+        color: #00bcd4;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      footer a::after {
+        content: "";
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #e0e0e0;
+        bottom: -2px;
+        left: 0;
+        transition: width 0.3s ease;
+      }
+
+      footer a:hover::after {
+        width: 100%;
+      }
+
+      footer a:hover {
+        color: #e0e0e0;
+        text-shadow: 0 0 8px rgba(0, 188, 212, 0.7);
+      }
+
+      /* Enhanced Scroll Button with hover effects */
+      .scroll-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2),
+          0 0 10px rgba(0, 188, 212, 0.3);
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(20px) scale(0);
+        animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 2s forwards;
+        overflow: hidden;
+      }
+
+      .scroll-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(255, 255, 255, 0.3),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      html[dir="rtl"] .scroll-btn {
+        right: auto;
+        left: 30px;
+      }
+
+      @keyframes popIn {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .scroll-btn:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3),
+          0 0 20px rgba(0, 188, 212, 0.5);
+      }
+
+      .scroll-btn:hover::before {
+        opacity: 1;
+        animation: ripple 0.8s linear;
+      }
+
+      .scroll-btn i {
+        font-size: 24px;
+        transition: all 0.3s ease;
+      }
+
+      .scroll-btn:hover i {
+        transform: translateY(-3px);
+        animation: arrowBounce 1s infinite;
+      }
+
+      @keyframes arrowBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      /* Enhanced User Menu with glass effect */
+      .user-menu {
+        position: relative;
+      }
+
+      .user-menu-btn {
+        background: rgba(0, 188, 212, 0.1);
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        color: #00bcd4;
+        border-radius: 50px;
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.1);
+      }
+
+      .user-menu-btn:hover {
+        background: rgba(0, 188, 212, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2),
+          0 0 15px rgba(0, 188, 212, 0.2);
+      }
+
+      .user-menu-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 10px;
+        background: rgba(10, 10, 10, 0.95);
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        border-radius: 10px;
+        width: 200px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 1000;
+      }
+
+      html[dir="rtl"] .user-menu-dropdown {
+        right: auto;
+        left: 0;
+      }
+
+      .user-menu-dropdown.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .user-menu-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #e0e0e0;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .user-menu-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 188, 212, 0.1),
+          transparent
+        );
+        transition: all 0.5s ease;
+      }
+
+      .user-menu-item:hover::before {
+        left: 100%;
+      }
+
+      .user-menu-item:hover {
+        background: rgba(0, 188, 212, 0.1);
+        color: #00bcd4;
+        transform: translateX(5px);
+      }
+
+      .user-menu-item i {
+        width: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .user-menu-item:hover i {
+        transform: scale(1.2);
+        color: #00bcd4;
+      }
+
+      .user-menu-divider {
+        height: 1px;
+        background: rgba(0, 188, 212, 0.2);
+        margin: 5px 0;
+        box-shadow: 0 0 5px rgba(0, 188, 212, 0.2);
+      }
+
+      /* Enhanced Page Transition Animation */
+      .page-transition {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0a0a0a;
+        z-index: 9999;
+        transform: translateY(100%);
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .page-transition.active {
+        transform: translateY(0);
+      }
+
+      .page-transition.exit {
+        transform: translateY(-100%);
+      }
+
+      .page-transition::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 188, 212, 0.1),
+          transparent 70%
+        );
+        animation: pulse-radial 2s infinite;
+      }
+
+      /* Enhanced Language Switch Button */
+      .lang-switch {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        z-index: 1001;
+        background: linear-gradient(135deg, #00bcd4, #6a1b9a);
+        border: none;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.3);
+        width: auto;
+        animation: buttonGlow 3s infinite alternate;
+      }
+
+      .lang-switch::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(255, 255, 255, 0.3),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      html[dir="rtl"] .lang-switch {
+        left: auto;
+        right: 30px;
+      }
+
+      .lang-switch:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
+          0 0 15px rgba(0, 188, 212, 0.4);
+      }
+
+      .lang-switch:hover::before {
+        opacity: 1;
+        animation: ripple 0.8s linear;
+      }
+
+      .lang-switch i {
+        font-size: 18px;
+        animation: spin 6s linear infinite;
+      }
+
+      .lang-switch span {
+        position: relative;
+        z-index: 1;
+        letter-spacing: 1px;
+        white-space: nowrap;
+      }
+
+      /* Enhanced animation for language switch */
+      @keyframes switchLang {
+        0% {
+          transform: rotateY(0deg);
+          opacity: 1;
+        }
+        50% {
+          transform: rotateY(90deg);
+          opacity: 0;
+        }
+        100% {
+          transform: rotateY(0deg);
+          opacity: 1;
+        }
+      }
+
+      .lang-switch.switching span {
+        animation: switchLang 0.5s ease-in-out;
+      }
+
+      /* ENHANCED ANIMATIONS AND VISUALS */
+
+      /* Enhanced AI Detection Animation */
+      .ai-detection-animation {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .brain-container {
+        width: 90%;
+        height: 90%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 188, 212, 0.05);
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(0, 188, 212, 0.2),
+          inset 0 0 50px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        animation: containerPulse 4s infinite alternate;
+      }
+
+      @keyframes containerPulse {
+        0% {
+          box-shadow: 0 0 30px rgba(0, 188, 212, 0.2),
+            inset 0 0 50px rgba(0, 0, 0, 0.3);
+        }
+        100% {
+          box-shadow: 0 0 50px rgba(0, 188, 212, 0.4),
+            inset 0 0 70px rgba(0, 0, 0, 0.4);
+        }
+      }
+
+      .brain-outline {
+        position: absolute;
+        width: 70%;
+        height: 70%;
+        border: 3px solid rgba(0, 188, 212, 0.7);
+        border-radius: 50%;
+        animation: rotate 20s linear infinite;
+        box-shadow: 0 0 30px rgba(0, 188, 212, 0.3);
+      }
+
+      .brain-outline::before,
+      .brain-outline::after {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #00bcd4;
+        border-radius: 50%;
+        box-shadow: 0 0 15px #00bcd4;
+      }
+
+      .brain-outline::before {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .brain-outline::after {
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .brain-inner {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        background: rgba(0, 188, 212, 0.1);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: inset 0 0 30px rgba(0, 188, 212, 0.2);
+        animation: innerPulse 3s infinite alternate;
+      }
+
+      @keyframes innerPulse {
+        0% {
+          transform: scale(1);
+          box-shadow: inset 0 0 30px rgba(0, 188, 212, 0.2);
+        }
+        100% {
+          transform: scale(1.05);
+          box-shadow: inset 0 0 50px rgba(0, 188, 212, 0.4);
+        }
+      }
+
+      .brain-icon {
+        font-size: 60px;
+        color: #00bcd4;
+        animation: pulse 2s infinite;
+        text-shadow: 0 0 20px rgba(0, 188, 212, 0.7);
+      }
+
+      .neural-connection {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #00bcd4, transparent);
+        opacity: 0;
+        animation: fade-in-out 3s infinite;
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      .neural-connection:nth-child(1) {
+        top: 30%;
+        transform: rotate(30deg);
+        animation-delay: 0.5s;
+      }
+
+      .neural-connection:nth-child(2) {
+        top: 50%;
+        transform: rotate(-45deg);
+        animation-delay: 1s;
+      }
+
+      .neural-connection:nth-child(3) {
+        top: 70%;
+        transform: rotate(60deg);
+        animation-delay: 1.5s;
+      }
+
+      .neural-node {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: #00bcd4;
+        border-radius: 50%;
+        box-shadow: 0 0 15px #00bcd4;
+        animation: blink 2s infinite;
+      }
+
+      .neural-node:nth-child(4) {
+        top: 20%;
+        left: 30%;
+        animation-delay: 0.2s;
+      }
+
+      .neural-node:nth-child(5) {
+        top: 40%;
+        left: 70%;
+        animation-delay: 0.7s;
+      }
+
+      .neural-node:nth-child(6) {
+        top: 60%;
+        left: 20%;
+        animation-delay: 1.2s;
+      }
+
+      .neural-node:nth-child(7) {
+        top: 80%;
+        left: 60%;
+        animation-delay: 1.7s;
+      }
+
+      .scan-result {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+        opacity: 0;
+        animation: result-appear 3s infinite;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.5);
+          box-shadow: 0 0 25px #00bcd4;
+        }
+      }
+
+      @keyframes fade-in-out {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scaleX(0.8);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scaleX(1);
+        }
+      }
+
+      @keyframes result-appear {
+        0%,
+        30% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        50%,
+        90% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      /* Enhanced Cancer Comparison Visualization */
+      .cancer-comparison {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .comparison-container {
+        width: 90%;
+        height: 90%;
+        position: relative;
+        background: rgba(0, 188, 212, 0.05);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2),
+          inset 0 0 40px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+      }
+
+      .comparison-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="2" fill="rgba(0,188,212,0.1)"/></svg>');
+        background-size: 50px 50px;
+        opacity: 0.5;
+        pointer-events: none;
+        animation: backgroundMove 30s linear infinite;
+      }
+
+      .comparison-title {
+        font-size: 22px;
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        margin-bottom: 20px;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Enhanced Bar Chart Animation */
+      .bar-chart {
+        width: 100%;
+        height: 250px;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-end;
+        margin-bottom: 40px;
+        position: relative;
+      }
+
+      .bar-chart::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background: rgba(0, 188, 212, 0.3);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+      }
+
+      .bar-chart::after {
+        content: "Cancer Types";
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #00bcd4;
+        font-size: 14px;
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+      }
+
+      .chart-bar {
+        width: 15%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .incidence-bar,
+      .mortality-bar {
+        width: 70%;
+        position: absolute;
+        bottom: 0;
+        border-radius: 5px 5px 0 0;
+        transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        height: 0;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .incidence-bar {
+        background: linear-gradient(
+          to top,
+          rgba(0, 188, 212, 0.7),
+          rgba(0, 188, 212, 0.9)
+        );
+        z-index: 1;
+        left: 10%;
+      }
+
+      .mortality-bar {
+        background: linear-gradient(
+          to top,
+          rgba(233, 30, 99, 0.7),
+          rgba(233, 30, 99, 0.9)
+        );
+        z-index: 2;
+        left: 15%;
+      }
+
+      .chart-bar.animated .incidence-bar.lung {
+        height: 80%;
+      }
+      .chart-bar.animated .mortality-bar.lung {
+        height: 70%;
+      }
+
+      .chart-bar.animated .incidence-bar.breast {
+        height: 85%;
+      }
+      .chart-bar.animated .mortality-bar.breast {
+        height: 25%;
+      }
+
+      .chart-bar.animated .incidence-bar.colorectal {
+        height: 65%;
+      }
+      .chart-bar.animated .mortality-bar.colorectal {
+        height: 35%;
+      }
+
+      .chart-bar.animated .incidence-bar.prostate {
+        height: 70%;
+      }
+      .chart-bar.animated .mortality-bar.prostate {
+        height: 15%;
+      }
+
+      .chart-bar.animated .incidence-bar.liver {
+        height: 40%;
+      }
+      .chart-bar.animated .mortality-bar.liver {
+        height: 38%;
+      }
+
+      .chart-bar.animated .incidence-bar,
+      .chart-bar.animated .mortality-bar {
+        animation: barGlow 3s infinite alternate;
+      }
+
+      @keyframes barGlow {
+        0% {
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        100% {
+          box-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
+        }
+      }
+
+      .bar-label {
+        position: absolute;
+        bottom: -25px;
+        font-size: 14px;
+        color: #e0e0e0;
+        text-align: center;
+        width: 100%;
+      }
+
+      .bar-value {
+        position: absolute;
+        top: -25px;
+        font-size: 12px;
+        color: #ffffff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        opacity: 0;
+        transition: opacity 0.5s ease 1.5s, transform 0.5s ease 1.5s;
+        transform: translateY(10px);
+      }
+
+      .chart-bar.animated .bar-value {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .incidence-value {
+        left: 0;
+        background: rgba(0, 188, 212, 0.7);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      .mortality-value {
+        right: 0;
+        background: rgba(233, 30, 99, 0.7);
+        box-shadow: 0 0 10px rgba(233, 30, 99, 0.3);
+      }
+
+      .chart-legend {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .legend-item:hover {
+        transform: translateY(-3px);
+      }
+
+      .legend-color {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .legend-item:hover .legend-color {
+        transform: scale(1.2);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      .legend-color.incidence {
+        background: rgba(0, 188, 212, 0.7);
+      }
+
+      .legend-color.mortality {
+        background: rgba(233, 30, 99, 0.7);
+      }
+
+      .legend-text {
+        font-size: 14px;
+        color: #e0e0e0;
+      }
+
+      /* Enhanced Demographics Visualization */
+      .demographics-section {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .gender-distribution {
+        width: 48%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .gender-distribution:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.2);
+      }
+
+      .gender-title {
+        font-size: 18px;
+        color: #00bcd4;
+        margin-bottom: 15px;
+        text-align: center;
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+      }
+
+      .gender-chart {
+        width: 200px;
+        height: 200px;
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .gender-pie {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(
+          rgba(233, 30, 99, 0.7) 0% 25%,
+          rgba(0, 188, 212, 0.7) 25% 100%
+        );
+        transform: rotate(-90deg);
+        opacity: 0;
+        transition: opacity 1s ease;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .gender-pie.animated {
+        opacity: 1;
+        animation: pieRotate 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes pieRotate {
+        0% {
+          transform: rotate(-90deg) scale(0.5);
+        }
+        100% {
+          transform: rotate(-90deg) scale(1);
+        }
+      }
+
+      .gender-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        background: rgba(18, 18, 18, 0.8);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #00bcd4;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+      }
+
+      .gender-labels {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+      }
+
+      .gender-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .gender-label:hover {
+        transform: translateY(-3px);
+      }
+
+      .gender-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .gender-label:hover .gender-color {
+        transform: scale(1.2);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      .gender-color.male {
+        background: rgba(0, 188, 212, 0.7);
+      }
+
+      .gender-color.female {
+        background: rgba(233, 30, 99, 0.7);
+      }
+
+      .gender-text {
+        font-size: 14px;
+        color: #e0e0e0;
+      }
+
+      .age-distribution {
+        width: 48%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .age-distribution:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.2);
+      }
+
+      .age-title {
+        font-size: 18px;
+        color: #00bcd4;
+        margin-bottom: 15px;
+        text-align: center;
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+      }
+
+      .age-bars {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-end;
+        position: relative;
+      }
+
+      .age-bars::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background: rgba(0, 188, 212, 0.3);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+      }
+
+      .age-bar-container {
+        width: 25%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .age-bar {
+        width: 60%;
+        background: linear-gradient(to top, #00bcd4, #6a1b9a);
+        border-radius: 5px 5px 0 0;
+        height: 0;
+        transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .age-bar.animated.young {
+        height: 30%;
+      }
+      .age-bar.animated.middle {
+        height: 65%;
+      }
+      .age-bar.animated.elderly {
+        height: 15%;
+      }
+
+      .age-bar.animated {
+        animation: barGlow 3s infinite alternate;
+      }
+
+      .age-label {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #e0e0e0;
+        text-align: center;
+      }
+
+      .age-percentage {
+        position: absolute;
+        top: -25px;
+        font-size: 12px;
+        color: #ffffff;
+        background: rgba(0, 188, 212, 0.7);
+        padding: 2px 6px;
+        border-radius: 4px;
+        opacity: 0;
+        transition: opacity 0.5s ease 1.5s, transform 0.5s ease 1.5s;
+        transform: translateY(10px);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      .age-bar-container.animated .age-percentage {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Enhanced Risk Factors Visualization */
+      .risk-visualization {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .risk-container {
+        width: 90%;
+        height: 90%;
+        position: relative;
+        background: rgba(0, 188, 212, 0.05);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2),
+          inset 0 0 40px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .risk-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 188, 212, 0.05),
+          transparent 70%
+        );
+        animation: pulse-radial 5s infinite;
+        pointer-events: none;
+      }
+
+      .risk-title {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        z-index: 1;
+      }
+
+      .risk-hexagons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+        width: 90%;
+        position: relative;
+        z-index: 1;
+      }
+
+      .risk-hex {
+        width: 120px;
+        height: 140px;
+        background: rgba(0, 188, 212, 0.1);
+        clip-path: polygon(
+          50% 0%,
+          100% 25%,
+          100% 75%,
+          50% 100%,
+          0% 75%,
+          0% 25%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        opacity: 0;
+        transform: scale(0.8);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .risk-hex::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at top right,
+          rgba(0, 188, 212, 0.2),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .risk-hex.animated {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .risk-hex:hover {
+        background: rgba(0, 188, 212, 0.2);
+        transform: translateY(-15px) scale(1.1);
+        z-index: 2;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3),
+          0 0 20px rgba(0, 188, 212, 0.3);
+      }
+
+      .risk-hex:hover::before {
+        opacity: 1;
+        animation: pulse-radial 2s infinite;
+      }
+
+      .risk-hex-icon {
+        font-size: 30px;
+        color: #00bcd4;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      .risk-hex:hover .risk-hex-icon {
+        transform: scale(1.2);
+        text-shadow: 0 0 15px rgba(0, 188, 212, 0.7);
+      }
+
+      .risk-hex-text {
+        font-size: 14px;
+        color: #e0e0e0;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .risk-hex-value {
+        font-size: 18px;
+        color: #00bcd4;
+        font-weight: bold;
+        margin-top: 5px;
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+      }
+
+      /* Enhanced Liver Cancer Stages Visualization */
+      .stages-visualization {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .liver-3d-model {
+        width: 90%;
+        height: 90%;
+        position: relative;
+        background: rgba(0, 188, 212, 0.05);
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2),
+          inset 0 0 40px rgba(0, 0, 0, 0.2);
+        perspective: 1000px;
+        overflow: hidden;
+      }
+
+      .liver-3d-model::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 188, 212, 0.05),
+          transparent 70%
+        );
+        animation: pulse-radial 5s infinite;
+        pointer-events: none;
+      }
+
+      .liver-3d {
+        width: 70%;
+        height: 70%;
+        position: relative;
+        transform-style: preserve-3d;
+        animation: rotate3d 20s infinite linear;
+        transform: rotateX(10deg);
+      }
+
+      @keyframes rotate3d {
+        0% {
+          transform: rotateY(0deg) rotateX(10deg);
+        }
+        100% {
+          transform: rotateY(360deg) rotateX(10deg);
+        }
+      }
+
+      .liver-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 188, 212, 0.1);
+        border: 2px solid rgba(0, 188, 212, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: #00bcd4;
+        backface-visibility: visible;
+        transform-style: preserve-3d;
+        box-shadow: 0 0 20px rgba(0, 188, 212, 0.2);
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      .liver-face:nth-child(1) {
+        transform: translateZ(100px);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      }
+
+      .liver-face:nth-child(2) {
+        transform: rotateY(180deg) translateZ(100px);
+        border-radius: 50% 50% 40% 60% / 50% 40% 50% 60%;
+      }
+
+      .liver-face:nth-child(3) {
+        transform: rotateY(90deg) translateZ(100px);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      }
+
+      .liver-face:nth-child(4) {
+        transform: rotateY(-90deg) translateZ(100px);
+        border-radius: 30% 70% 60% 40% / 50% 60% 40% 50%;
+      }
+
+      .liver-face:nth-child(5) {
+        transform: rotateX(90deg) translateZ(100px);
+        border-radius: 40% 60% 50% 50% / 60% 40% 50% 50%;
+      }
+
+      .liver-face:nth-child(6) {
+        transform: rotateX(-90deg) translateZ(100px);
+        border-radius: 50% 50% 60% 40% / 40% 60% 50% 50%;
+      }
+
+      .stage-markers {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .stage-marker {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.3s ease;
+        z-index: 2;
+        pointer-events: auto;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .stage-marker.active {
+        transform: scale(1.2);
+        box-shadow: 0 0 20px currentColor, 0 0 30px rgba(0, 0, 0, 0.5);
+        z-index: 3;
+      }
+
+      .stage-marker:nth-child(1) {
+        top: 20%;
+        left: 30%;
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        animation: pop-in 0.5s forwards 0.2s;
+      }
+
+      .stage-marker:nth-child(2) {
+        top: 40%;
+        left: 60%;
+        background: linear-gradient(135deg, #8bc34a, #558b2f);
+        animation: pop-in 0.5s forwards 0.4s;
+      }
+
+      .stage-marker:nth-child(3) {
+        top: 60%;
+        left: 40%;
+        background: linear-gradient(135deg, #ffc107, #ff8f00);
+        animation: pop-in 0.5s forwards 0.6s;
+      }
+
+      .stage-marker:nth-child(4) {
+        top: 70%;
+        left: 70%;
+        background: linear-gradient(135deg, #ff9800, #e65100);
+        animation: pop-in 0.5s forwards 0.8s;
+      }
+
+      .stage-marker:nth-child(5) {
+        top: 50%;
+        left: 20%;
+        background: linear-gradient(135deg, #f44336, #b71c1c);
+        animation: pop-in 0.5s forwards 1s;
+      }
+
+      @keyframes pop-in {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .stage-info {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #00bcd4;
+        font-size: 18px;
+        font-weight: bold;
+        opacity: 0;
+        animation: info-appear 5s infinite;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 10px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+      }
+
+      @keyframes info-appear {
+        0%,
+        20% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        30%,
+        90% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Enhanced Prevention Visualization */
+      .prevention-visualization {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .prevention-container {
+        width: 90%;
+        height: 90%;
+        position: relative;
+        background: rgba(0, 188, 212, 0.05);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2),
+          inset 0 0 40px rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .prevention-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 188, 212, 0.05),
+          transparent 70%
+        );
+        animation: pulse-radial 5s infinite;
+        pointer-events: none;
+      }
+
+      .prevention-wheel {
+        width: 70%;
+        height: 70%;
+        position: relative;
+        border-radius: 50%;
+        border: 3px solid rgba(0, 188, 212, 0.5);
+        animation: rotate 30s linear infinite;
+        box-shadow: 0 0 30px rgba(0, 188, 212, 0.3);
+      }
+
+      .prevention-item {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: rgba(0, 188, 212, 0.1);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform-origin: center;
+        animation: counter-rotate 30s linear infinite;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .prevention-item:hover {
+        background: rgba(0, 188, 212, 0.2);
+        box-shadow: 0 0 20px rgba(0, 188, 212, 0.4), 0 0 30px rgba(0, 0, 0, 0.4);
+        transform: scale(1.1) rotate(0deg);
+        z-index: 2;
+      }
+
+      @keyframes counter-rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(-360deg);
+        }
+      }
+
+      .prevention-item:nth-child(1) {
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .prevention-item:nth-child(2) {
+        top: 50%;
+        right: 0;
+        transform: translate(50%, -50%);
+      }
+
+      .prevention-item:nth-child(3) {
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 50%);
+      }
+
+      .prevention-item:nth-child(4) {
+        top: 50%;
+        left: 0;
+        transform: translate(-50%, -50%);
+      }
+
+      .prevention-item:nth-child(5) {
+        top: 15%;
+        left: 15%;
+      }
+
+      .prevention-item:nth-child(6) {
+        bottom: 15%;
+        right: 15%;
+      }
+
+      .prevention-icon {
+        font-size: 30px;
+        color: #00bcd4;
+        animation: pulse 2s infinite;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .prevention-item:hover .prevention-icon {
+        transform: scale(1.2);
+        text-shadow: 0 0 15px rgba(0, 188, 212, 0.7);
+      }
+
+      .prevention-label {
+        position: absolute;
+        background: rgba(0, 188, 212, 0.2);
+        color: #e0e0e0;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
+        transform: translateY(10px);
+      }
+
+      .prevention-item:hover .prevention-label {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .prevention-item:nth-child(1) .prevention-label {
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .prevention-item:nth-child(2) .prevention-label {
+        top: 50%;
+        right: -120px;
+        transform: translateY(-50%);
+      }
+
+      .prevention-item:nth-child(3) .prevention-label {
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .prevention-item:nth-child(4) .prevention-label {
+        top: 50%;
+        left: -120px;
+        transform: translateY(-50%);
+      }
+
+      .prevention-item:nth-child(5) .prevention-label {
+        top: -40px;
+        left: 0;
+      }
+
+      .prevention-item:nth-child(6) .prevention-label {
+        bottom: -40px;
+        right: 0;
+      }
+
+      /* Enhanced Mobile Menu */
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: #e0e0e0;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .mobile-menu-btn:hover {
+        color: #00bcd4;
+        transform: scale(1.1);
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.98);
+        z-index: 1000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .mobile-menu.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .mobile-menu-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: #e0e0e0;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      html[dir="rtl"] .mobile-menu-close {
+        right: auto;
+        left: 20px;
+      }
+
+      .mobile-menu-close:hover {
+        color: #00bcd4;
+        transform: rotate(90deg);
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      .mobile-menu-items {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .mobile-menu-items a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-size: 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        padding: 10px 20px;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .mobile-menu-items a::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 188, 212, 0.1),
+          transparent
+        );
+        transition: all 0.5s ease;
+      }
+
+      .mobile-menu-items a:hover::before {
+        left: 100%;
+      }
+
+      .mobile-menu-items a:hover {
+        background: rgba(0, 188, 212, 0.1);
+        color: #00bcd4;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2),
+          0 0 10px rgba(0, 188, 212, 0.2);
+      }
+
+      .mobile-menu-item i {
+        width: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .mobile-menu-item:hover i {
+        transform: scale(1.2);
+        color: #00bcd4;
+      }
+
+      .user-menu-divider {
+        height: 1px;
+        background: rgba(0, 188, 212, 0.2);
+        margin: 5px 0;
+        box-shadow: 0 0 5px rgba(0, 188, 212, 0.2);
+      }
+
+      /* Enhanced Auth Buttons */
+      .auth-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .auth-button {
+        background: linear-gradient(135deg, #00bcd4, #6a1b9a);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3),
+          0 0 10px rgba(0, 188, 212, 0.3);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .auth-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(255, 255, 255, 0.3),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .auth-button:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.5);
+      }
+
+      .auth-button:hover::before {
+        opacity: 1;
+        animation: ripple 0.8s linear;
+      }
+
+      .auth-button i {
+        font-size: 18px;
+      }
+
+      /* User Dropdown Menu - NEW STYLES */
+      .user-dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .user-dropdown-btn {
+        color: #e6f4f1;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 600;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 8px 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .user-dropdown-btn i {
+        transition: transform 0.3s ease;
+      }
+
+      .user-dropdown:hover .user-dropdown-btn i {
+        transform: rotate(180deg);
+      }
+
+      .user-dropdown-content {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 10px;
+        background: rgba(10, 10, 10, 0.95);
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        border-radius: 10px;
+        min-width: 180px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 1000;
+      }
+
+      html[dir="rtl"] .user-dropdown-content {
+        right: auto;
+        left: 0;
+      }
+
+      .user-dropdown:hover .user-dropdown-content {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .user-dropdown-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #e0e0e0;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .user-dropdown-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 188, 212, 0.1),
+          transparent
+        );
+        transition: all 0.5s ease;
+      }
+
+      .user-dropdown-item:hover::before {
+        left: 100%;
+      }
+
+      .user-dropdown-item:hover {
+        background: rgba(0, 188, 212, 0.1);
+        color: #00bcd4;
+        transform: translateX(5px);
+      }
+
+      .user-dropdown-item i {
+        width: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .user-dropdown-item:hover i {
+        transform: scale(1.2);
+        color: #00bcd4;
+      }
+
+      /* Enhanced Responsive Design */
+      @media (max-width: 1200px) {
+        .text-container {
+          padding: 40px;
+        }
+
+        h2 {
+          font-size: 36px;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .section-content {
+          flex-direction: column !important;
+        }
+
+        .text-container,
+        .visual-container {
+          width: 100%;
+        }
+
+        .visual-container {
+          height: 400px;
+          order: -1;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        h2 {
+          font-size: 32px;
+          text-align: center;
+        }
+
+        h2::after {
+          left: 20%;
+          width: 60%;
+        }
+
+        html[dir="rtl"] h2::after {
+          left: auto;
+          right: 20%;
+        }
+
+        .demographics-section {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .gender-distribution,
+        .age-distribution {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          padding: 15px;
+        }
+
+        nav h1 {
+          font-size: 22px;
+        }
+
+        nav .right {
+          gap: 5px;
+        }
+
+        nav a {
+          font-size: 16px;
+          padding: 5px 8px;
+        }
+
+        .text-container {
+          padding: 30px 20px;
+        }
+
+        .visual-container {
+          height: 300px;
+        }
+
+        section {
+          margin: 60px 0;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+          max-width: 20%;
+        }
+
+        .lang-switch {
+          padding: 8px 15px;
+          font-size: 14px;
+        }
+
+        .risk-hex {
+          width: 100px;
+          height: 120px;
+        }
+
+        .risk-hex-icon {
+          font-size: 20px;
+        }
+
+        .risk-hex-text {
+          font-size: 10px;
+        }
+
+        .risk-hex-value {
+          font-size: 14px;
+        }
+
+        .prevention-item {
+          width: 60px;
+          height: 60px;
+        }
+
+        .prevention-icon {
+          font-size: 24px;
+        }
+
+        .prevention-label {
+          font-size: 12px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        nav .right {
+          display: none;
+        }
+
+        nav .mobile-menu-btn {
+          display: block;
+        }
+
+        .mobile-menu {
+          display: flex;
+        }
+
+        .lang-switch {
+          padding: 6px 12px;
+          font-size: 12px;
+        }
+
+        .visual-container {
+          height: 250px;
+        }
+
+        h2 {
+          font-size: 28px;
+        }
+
+        .risk-hexagons {
+          gap: 10px;
+        }
+
+        .risk-hex {
+          width: 80px;
+          height: 100px;
+        }
+
+        .risk-hex-icon {
+          font-size: 20px;
+        }
+
+        .risk-hex-text {
+          font-size: 10px;
+        }
+
+        .risk-hex-value {
+          font-size: 14px;
+        }
+
+        .prevention-item {
+          width: 60px;
+          height: 60px;
+        }
+
+        .prevention-icon {
+          font-size: 24px;
+        }
+
+        .prevention-label {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Language Switch Button - REDESIGNED -->
+    <button class="lang-switch" id="langSwitch">
+      <i class="fas fa-globe"></i>
+      <span>Switch to Arabic</span>
+    </button>
+
+    <!-- Page Transition Element -->
+    <div class="page-transition" id="page-transition"></div>
+
+    <!-- Animated Background -->
+    <div class="animated-bg" id="animated-bg"></div>
+
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <button class="mobile-menu-close" id="mobile-menu-close">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="mobile-menu-items">
+        <a href="#home"
+          ><i class="fas fa-home"></i> <span class="menu-text-en">Home</span
+          ><span class="menu-text-ar">الرئيسية</span></a
+        >
+        <a href="#statistics"
+          ><i class="fas fa-chart-bar"></i>
+          <span class="menu-text-en">Liver Cancer</span
+          ><span class="menu-text-ar">سرطان الكبد</span></a
+        >
+        <a href="#stages"
+          ><i class="fas fa-layer-group"></i>
+          <span class="menu-text-en">Liver Cancer Stages</span
+          ><span class="menu-text-ar">مراحل سرطان الكبد</span></a
+        >
+        <a href="#factors"
+          ><i class="fas fa-exclamation-triangle"></i>
+          <span class="menu-text-en">Risk Factors</span
+          ><span class="menu-text-ar">عوامل الخطر</span></a
+        >
+        <a href="#prevention"
+          ><i class="fas fa-shield-alt"></i>
+          <span class="menu-text-en">Prevention</span
+          ><span class="menu-text-ar">الوقاية</span></a
+        >
+        <a href="login.html"
+          ><i class="fas fa-sign-in-alt"></i>
+          <span class="menu-text-en">Login</span
+          ><span class="menu-text-ar">تسجيل الدخول</span></a
+        >
+        <a href="signup.html"
+          ><i class="fas fa-user-plus"></i>
+          <span class="menu-text-en">Register</span
+          ><span class="menu-text-ar">التسجيل</span></a
+        >
+        <button id="mobile-lang-switcher" class="lang-btn">
+          <span class="lang-text-en">ع</span>
+          <span class="lang-text-ar">EN</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navbar Section -->
+    <nav>
+      <div class="left">
+        <img
+          src="./styleimages/logo.avif"
+          alt="Logo"
+          onclick="window.location.href='index.html'"
+        />
+        <h1 onclick="window.location.href='index.html'">
+          <span class="title-text-en">Liver Cancer Detection AI</span>
+          <span class="title-text-ar"
+            >الذكاء الاصطناعي للكشف عن سرطان الكبد</span
+          >
+        </h1>
+      </div>
+      <div class="right">
+        <a href="#home" class="active">
+          <i class="fas fa-home"></i>
+          <span class="nav-text-en">Home</span>
+          <span class="nav-text-ar">الرئيسية</span>
+        </a>
+        <a href="#statistics">
+          <i class="fas fa-chart-bar"></i>
+          <span class="nav-text-en">Liver Cancer</span>
+          <span class="nav-text-ar">سرطان الكبد</span>
+        </a>
+        <a href="#stages">
+          <i class="fas fa-layer-group"></i>
+          <span class="nav-text-en">Stages</span>
+          <span class="nav-text-ar">المراحل</span>
+        </a>
+        <a href="#factors">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span class="nav-text-en">Risk Factors</span>
+          <span class="nav-text-ar">عوامل الخطر</span>
+        </a>
+        <a href="#prevention">
+          <i class="fas fa-shield-alt"></i>
+          <span class="nav-text-en">Prevention</span>
+          <span class="nav-text-ar">الوقاية</span>
+        </a>
+
+        <!-- NEW USER DROPDOWN MENU -->
+        <div class="user-dropdown">
+          <a href="#" class="user-dropdown-btn">
+            <i class="fas fa-user"></i>
+            <span class="nav-text-en">User</span>
+            <span class="nav-text-ar">المستخدم</span>
+            <i class="fas fa-chevron-down"></i>
+          </a>
+          <div class="user-dropdown-content">
+            <a href="login.html" class="user-dropdown-item">
+              <i class="fas fa-sign-in-alt"></i>
+              <span class="nav-text-en">Login</span>
+              <span class="nav-text-ar">تسجيل الدخول</span>
+            </a>
+            <a href="signup.html" class="user-dropdown-item">
+              <i class="fas fa-user-plus"></i>
+              <span class="nav-text-en">Register</span>
+              <span class="nav-text-ar">التسجيل</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="lang-switcher">
+          <button id="lang-switcher" class="lang-btn">
+            <i class="fas fa-globe"></i>
+            <span class="lang-text-en">ع</span>
+            <span class="lang-text-ar">EN</span>
+          </button>
+        </div>
+      </div>
+      <button class="mobile-menu-btn" id="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+
+    <!-- Scroll Button -->
+    <button
+      class="scroll-btn"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      title="Scroll to top"
+    >
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Main Container -->
+    <div class="main-container" id="home">
+      <!-- Section 1: What We Do -->
+      <section>
+        <div class="section-content">
+          <div class="text-container">
+            <h2>
+              <span class="section-title-en">Revolutionary AI Detection</span>
+              <span class="section-title-ar"
+                >الكشف الثوري بالذكاء الاصطناعي</span
+              >
+            </h2>
+            <p>
+              <span class="section-text-en">
+                Welcome to the future of liver cancer diagnostics. Our
+                cutting-edge AI technology is transforming how liver cancer is
+                detected, diagnosed, and treated at its earliest stages.
+              </span>
+              <span class="section-text-ar">
+                مرحبًا بكم في مستقبل تشخيص سرطان الكبد. تقنية الذكاء الاصطناعي
+                المتطورة لدينا تغير طريقة اكتشاف وتشخيص وعلاج سرطان الكبد في
+                مراحله المبكرة.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                Traditional diagnostic methods often detect liver cancer too
+                late, when treatment options are limited. Our AI-powered
+                platform analyzes complex medical data to identify subtle
+                patterns and biomarkers that human eyes might miss.
+              </span>
+              <span class="section-text-ar">
+                غالبًا ما تكتشف طرق التشخيص التقليدية سرطان الكبد في وقت متأخر
+                جدًا، عندما تكون خيارات العلاج محدودة. تحلل منصتنا المدعومة
+                بالذكاء الاصطناعي البيانات الطبية المعقدة لتحديد الأنماط الدقيقة
+                والعلامات الحيوية التي قد تفوتها العين البشرية.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                By partnering with healthcare providers worldwide, we're
+                creating a future where early detection becomes the norm, not
+                the exception – dramatically improving survival rates and
+                patient outcomes.
+              </span>
+              <span class="section-text-ar">
+                من خلال الشراكة مع مقدمي الرعاية الصحية في جميع أنحاء العالم،
+                نحن نخلق مستقبلاً يصبح فيه الكشف المبكر هو القاعدة وليس
+                الاستثناء - مما يحسن بشكل كبير معدلات البقاء على قيد الحياة
+                ونتائج المرضى.
+              </span>
+            </p>
+            <div class="auth-buttons">
+              <a href="login.html" class="auth-button">
+                <i class="fas fa-sign-in-alt"></i>
+                <span class="section-text-en">Login</span>
+                <span class="section-text-ar">تسجيل الدخول</span>
+              </a>
+              <a href="signup.html" class="auth-button">
+                <i class="fas fa-user-plus"></i>
+                <span class="section-text-en">Register</span>
+                <span class="section-text-ar">التسجيل</span>
+              </a>
+            </div>
+          </div>
+          <div class="visual-container">
+            <div class="ai-detection-animation">
+              <div class="brain-container">
+                <div class="brain-outline"></div>
+                <div class="brain-inner">
+                  <i class="fas fa-brain brain-icon"></i>
+                </div>
+                <div class="neural-connection"></div>
+                <div class="neural-connection"></div>
+                <div class="neural-connection"></div>
+                <div class="neural-node"></div>
+                <div class="neural-node"></div>
+                <div class="neural-node"></div>
+                <div class="neural-node"></div>
+                <div class="scan-result">Early Detection: 98% Accuracy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Divider -->
+      <div class="section-divider">
+        <div class="divider-content">
+          <span class="divider-text-en">Liver Cancer</span>
+          <span class="divider-text-ar">سرطان الكبد</span>
+        </div>
+      </div>
+
+      <!-- Section 2: Statistics (Updated for Liver Cancer with new visualization) -->
+      <section id="statistics">
+        <div class="section-content">
+          <div class="text-container">
+            <h2>
+              <span class="section-title-en">Cancer Comparison Statistics</span>
+              <span class="section-title-ar">إحصائيات مقارنة السرطان</span>
+            </h2>
+            <p>
+              <span class="section-text-en">
+                Liver cancer represents a significant global health challenge,
+                with over 900,000 new cases diagnosed annually. When compared to
+                other common cancers, liver cancer has one of the highest
+                mortality-to-incidence ratios, making it particularly lethal.
+              </span>
+              <span class="section-text-ar">
+                يمثل سرطان الكبد تحديًا صحيًا عالميًا كبيرًا، مع تشخيص أكثر من
+                900,000 حالة جديدة سنويًا. عند مقارنته بأنواع السرطان الشائعة
+                الأخرى، يمتلك سرطان الكبد واحدة من أعلى نسب الوفيات إلى الإصابة،
+                مما يجعله قاتلاً بشكل خاص.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                While lung cancer accounts for 11.6% of all cancer cases, breast
+                cancer 11.7%, and colorectal cancer 10.2%, liver cancer
+                represents only 4.7% of global cancer diagnoses. However, it is
+                responsible for 8.3% of all cancer deaths worldwide,
+                highlighting its disproportionate impact.
+              </span>
+              <span class="section-text-ar">
+                بينما يمثل سرطان الرئة 11.6٪ من جميع حالات السرطان، وسرطان الثدي
+                11.7٪، وسرطان القولون والمستقيم 10.2٪، يمثل سرطان الكبد 4.7٪ فقط
+                من تشخيصات السرطان العالمية. ومع ذلك، فهو مسؤول عن 8.3٪ من جميع
+                وفيات السرطان على مستوى العالم، مما يبرز تأثيره غير المتناسب.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                The 5-year survival rate for liver cancer is approximately 20%,
+                significantly lower than breast cancer (90%), prostate cancer
+                (98%), and colorectal cancer (65%). This stark difference
+                underscores the critical importance of early detection, as
+                survival rates can increase to over 50% when liver cancer is
+                diagnosed at its earliest stages.
+              </span>
+              <span class="section-text-ar">
+                معدل البقاء على قيد الحياة لمدة 5 سنوات لسرطان الكبد هو حوالي
+                20٪، وهو أقل بكثير من سرطان الثدي (90٪)، وسرطان البروستاتا
+                (98٪)، وسرطان القولون والمستقيم (65٪). يؤكد هذا الاختلاف الكبير
+                على الأهمية الحاسمة للكشف المبكر، حيث يمكن أن ترتفع معدلات
+                البقاء على قيد الحياة إلى أكثر من 50٪ عندما يتم تشخيص سرطان
+                الكبد في مراحله المبكرة.
+              </span>
+            </p>
+          </div>
+          <div class="visual-container">
+            <div class="cancer-comparison">
+              <div class="comparison-container">
+                <div class="comparison-title">
+                  Cancer Incidence vs. Mortality Rates
+                </div>
+
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <div class="legend-color incidence"></div>
+                    <div class="legend-text">Incidence Rate</div>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-color mortality"></div>
+                    <div class="legend-text">Mortality Rate</div>
+                  </div>
+                </div>
+
+                <div class="bar-chart">
+                  <div class="chart-bar">
+                    <div class="incidence-bar lung"></div>
+                    <div class="mortality-bar lung"></div>
+                    <div class="bar-label">Lung</div>
+                    <div class="bar-value incidence-value">11.6%</div>
+                    <div class="bar-value mortality-value">18.0%</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="incidence-bar breast"></div>
+                    <div class="mortality-bar breast"></div>
+                    <div class="bar-label">Breast</div>
+                    <div class="bar-value incidence-value">11.7%</div>
+                    <div class="bar-value mortality-value">6.9%</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="incidence-bar colorectal"></div>
+                    <div class="mortality-bar colorectal"></div>
+                    <div class="bar-label">Colorectal</div>
+                    <div class="bar-value incidence-value">10.2%</div>
+                    <div class="bar-value mortality-value">9.2%</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="incidence-bar prostate"></div>
+                    <div class="mortality-bar prostate"></div>
+                    <div class="bar-label">Prostate</div>
+                    <div class="bar-value incidence-value">7.3%</div>
+                    <div class="bar-value mortality-value">3.8%</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="incidence-bar liver"></div>
+                    <div class="mortality-bar liver"></div>
+                    <div class="bar-label">Liver</div>
+                    <div class="bar-value incidence-value">4.7%</div>
+                    <div class="bar-value mortality-value">8.3%</div>
+                  </div>
+                </div>
+
+                <div class="demographics-section">
+                  <div class="gender-distribution">
+                    <div class="gender-title">Gender Distribution</div>
+                    <div class="gender-chart">
+                      <div class="gender-pie"></div>
+                      <div class="gender-center">Liver Cancer</div>
+                    </div>
+                    <div class="gender-labels">
+                      <div class="gender-label">
+                        <div class="gender-color male"></div>
+                        <div class="gender-text">Males: 75%</div>
+                      </div>
+                      <div class="gender-label">
+                        <div class="gender-color female"></div>
+                        <div class="gender-text">Females: 25%</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="age-distribution">
+                    <div class="age-title">Age Distribution</div>
+                    <div class="age-bars">
+                      <div class="age-bar-container">
+                        <div class="age-bar young"></div>
+                        <div class="age-label">Ages 45-64</div>
+                        <div class="age-percentage">30%</div>
+                      </div>
+                      <div class="age-bar-container">
+                        <div class="age-bar middle"></div>
+                        <div class="age-label">Ages 65-75</div>
+                        <div class="age-percentage">65%</div>
+                      </div>
+                      <div class="age-bar-container">
+                        <div class="age-bar elderly"></div>
+                        <div class="age-label">Ages 75+</div>
+                        <div class="age-percentage">15%</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Divider -->
+      <div class="section-divider">
+        <div class="divider-content">
+          <span class="divider-text-en">Risk Factors</span>
+          <span class="divider-text-ar">عوامل الخطر</span>
+        </div>
+      </div>
+
+      <!-- Section 3: Risk Factors for Liver Cancer -->
+      <section id="factors">
+        <div class="section-content">
+          <div class="text-container">
+            <h2>
+              <span class="section-title-en">Liver Cancer Risk Factors</span>
+              <span class="section-title-ar"
+                >عوامل خطر الإصابة بسرطان الكبد</span
+              >
+            </h2>
+            <p>
+              <span class="section-text-en">
+                Understanding the factors that contribute to liver cancer
+                development is essential for prevention and early detection.
+                Several key risk factors have been identified through extensive
+                research, with varying levels of impact on cancer development.
+              </span>
+              <span class="section-text-ar">
+                فهم العوامل التي تساهم في تطور سرطان الكبد أمر ضروري للوقاية
+                والكشف المبكر. تم تحديد العديد من عوامل الخطر الرئيسية من خلال
+                البحث المكثف، مع مستويات متفاوتة من التأثير على تطور السرطان.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                Hepatitis B and C viral infections are the leading causes of
+                liver cancer globally, accounting for approximately 80% of
+                cases. Chronic infection leads to inflammation and scarring of
+                the liver tissue (cirrhosis), which significantly increases
+                cancer risk. Other major risk factors include excessive alcohol
+                consumption, non-alcoholic fatty liver disease, aflatoxin
+                exposure, and certain inherited genetic conditions.
+              </span>
+              <span class="section-text-ar">
+                تعد عدوى فيروسات التهاب الكبد B وC الأسباب الرئيسية لسرطان الكبد
+                على مستوى العالم، حيث تمثل حوالي 80% من الحالات. تؤدي العدوى
+                المزمنة إلى التهاب وتندب أنسجة الكبد (تليف الكبد)، مما يزيد بشكل
+                كبير من خطر الإصابة بالسرطان. تشمل عوامل الخطر الرئيسية الأخرى
+                الاستهلاك المفرط للكحول، ومرض الكبد الدهني غير الكحولي، والتعرض
+                للأفلاتوكسين، وبعض الحالات الوراثية الموروثة.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                Identifying these risk factors allows for targeted screening and
+                prevention strategies. Our AI system can analyze multiple risk
+                factors simultaneously to provide personalized risk assessments
+                and monitoring recommendations, potentially preventing up to 40%
+                of liver cancer cases.
+              </span>
+              <span class="section-text-ar">
+                يسمح تحديد عوامل الخطر هذه باستراتيجيات فحص ووقاية مستهدفة. يمكن
+                لنظام الذكاء الاصطناعي لدينا تحليل عوامل خطر متعددة في وقت واحد
+                لتقديم تقييمات مخاطر شخصية وتوصيات مراقبة، مما قد يمنع ما يصل
+                إلى 40% من حالات سرطان الكبد.
+              </span>
+            </p>
+          </div>
+          <div class="visual-container">
+            <div class="risk-visualization">
+              <div class="risk-container">
+                <div class="risk-title">Primary Liver Cancer Risk Factors</div>
+                <div class="risk-hexagons">
+                  <div class="risk-hex">
+                    <i class="fas fa-virus risk-hex-icon"></i>
+                    <div class="risk-hex-text">Hepatitis B & C</div>
+                    <div class="risk-hex-value">80%</div>
+                  </div>
+                  <div class="risk-hex">
+                    <i class="fas fa-disease risk-hex-icon"></i>
+                    <div class="risk-hex-text">Cirrhosis</div>
+                    <div class="risk-hex-value">65%</div>
+                  </div>
+                  <div class="risk-hex">
+                    <i class="fas fa-wine-bottle risk-hex-icon"></i>
+                    <div class="risk-hex-text">Alcohol</div>
+                    <div class="risk-hex-value">50%</div>
+                  </div>
+                  <div class="risk-hex">
+                    <i class="fas fa-weight risk-hex-icon"></i>
+                    <div class="risk-hex-text">Metabolic Disorders</div>
+                    <div class="risk-hex-value">70%</div>
+                  </div>
+                  <div class="risk-hex">
+                    <i class="fas fa-biohazard risk-hex-icon"></i>
+                    <div class="risk-hex-text">Aflatoxin</div>
+                    <div class="risk-hex-value">40%</div>
+                  </div>
+                  <div class="risk-hex">
+                    <i class="fas fa-dna risk-hex-icon"></i>
+                    <div class="risk-hex-text">Genetic Factors</div>
+                    <div class="risk-hex-value">25%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Divider -->
+      <div class="section-divider">
+        <div class="divider-content">
+          <span class="divider-text-en">Liver Cancer Stages</span>
+          <span class="divider-text-ar">مراحل سرطان الكبد</span>
+        </div>
+      </div>
+
+      <!-- Section 4: Stages of Liver Cancer -->
+      <section id="stages">
+        <div class="section-content">
+          <div class="text-container">
+            <h2>
+              <span class="section-title-en"
+                >Liver Cancer Progression Stages</span
+              >
+              <span class="section-title-ar">مراحل تطور سرطان الكبد</span>
+            </h2>
+            <p>
+              <span class="section-text-en">
+                Liver cancer develops through distinct stages, each with
+                different characteristics, treatment options, and survival
+                rates. Understanding these stages is crucial for effective
+                treatment planning and prognosis.
+              </span>
+              <span class="section-text-ar">
+                يتطور سرطان الكبد عبر مراحل متميزة، كل منها له خصائص وخيارات
+                علاج ومعدلات بقاء مختلفة. فهم هذه المراحل أمر بالغ الأهمية
+                للتخطيط الفعال للعلاج والتشخيص.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                <strong>Stage 0 (Very Early):</strong> Cancer is found only in
+                one small area of the liver and has not spread to blood vessels.
+                At this stage, surgical removal or transplantation offers
+                excellent 5-year survival rates of 70-90%.
+              </span>
+              <span class="section-text-ar">
+                <strong>المرحلة 0 (المبكرة جدًا):</strong> يوجد السرطان في منطقة
+                صغيرة واحدة فقط من الكبد ولم ينتشر إلى الأوعية الدموية. في هذه
+                المرحلة، يوفر الاستئصال الجراحي أو زراعة الكبد معدلات بقاء
+                ممتازة لمدة 5 سنوات تتراوح بين 70-90٪.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                <strong>Stage A (Early):</strong> Single tumor or up to 3 small
+                tumors, each less than 3cm, with preserved liver function.
+                Treatment options include resection, ablation, or
+                transplantation with 5-year survival rates of 50-70%.
+              </span>
+              <span class="section-text-ar">
+                <strong>المرحلة أ (المبكرة):</strong> ورم واحد أو ما يصل إلى 3
+                أورام صغيرة، كل منها أقل من 3 سم، مع الحفاظ على وظائف الكبد.
+                تشمل خيارات العلاج الاستئصال أو الاستئصال بالتردد الحراري أو
+                زراعة الكبد مع معدلات بقاء لمدة 5 سنوات تتراوح بين 50-70٪.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                <strong>Stage B (Intermediate):</strong> Multiple tumors in
+                different parts of the liver, but cancer has not invaded blood
+                vessels or spread beyond the liver. Transarterial
+                chemoembolization (TACE) is often used, with 5-year survival
+                rates of 16-30%.
+              </span>
+              <span class="section-text-ar">
+                <strong>المرحلة ب (المتوسطة):</strong> أورام متعددة في أجزاء
+                مختلفة من الكبد، لكن السرطان لم يغزو الأوعية الدموية أو ينتشر
+                خارج الكبد. غالبًا ما يستخدم العلاج الكيميائي عبر الشرايين
+                (TACE)، مع معدلات بقاء لمدة 5 سنوات تتراوح بين 16-30٪.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                <strong>Stage C (Advanced):</strong> Cancer has invaded blood
+                vessels, nearby lymph nodes, or has symptoms related to liver
+                disease. Targeted therapy with sorafenib or lenvatinib is the
+                standard treatment, with median survival of 6-12 months.
+              </span>
+              <span class="section-text-ar">
+                <strong>المرحلة ج (المتقدمة):</strong> غزا السرطان الأوعية
+                الدموية أو العقد الليمفاوية القريبة، أو ظهرت أعراض متعلقة بمرض
+                الكبد. العلاج المستهدف بالسورافينيب أو اللينفاتينيب هو العلاج
+                القياسي، مع متوسط بقاء على قيد الحياة من 6-12 شهرًا.
+              </span>
+            </p>
+            <p>
+              <span class="section-text-en">
+                <strong>Stage D (Terminal):</strong> Advanced cancer with severe
+                liver dysfunction, often with metastasis to distant organs.
+                Palliative care is the primary approach, with median survival of
+                less than 3-4 months.
+              </span>
+              <span class="section-text-ar">
+                <strong>المرحلة د (النهائية):</strong> سرطان متقدم مع خلل شديد
+                في وظائف الكبد، غالبًا مع انتشار إلى أعضاء بعيدة. الرعاية
+                التلطيفية هي النهج الأساسي، مع متوسط بقاء على قيد الحياة أقل من
+                3-4 أشهر.
+              </span>
+            </p>
+          </div>
+          <div class="visual-container">
+            <div class="stages-visualization">
+              <div class="liver-3d-model">
+                <div class="liver-3d">
+                  <div class="liver-face">Stage 0</div>
+                  <div class="liver-face">Stage A</div>
+                  <div class="liver-face">Stage B</div>
+                  <div class="liver-face">Stage C</div>
+                  <div class="liver-face">Stage D</div>
+                  <div class="liver-face">Liver Cancer</div>
+                </div>
+                <div class="stage-markers">
+                  <div class="stage-marker">0</div>
+                  <div class="stage-marker">A</div>
+                  <div class="stage-marker">B</div>
+                  <div class="stage-marker">C</div>
+                  <div class="stage-marker">D</div>
+                </div>
+                <div class="stage-info">Click on stages to learn more</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Divider -->
+      <div class="section-divider">
+        <div class="divider-content">
+          <span class="divider-text-en">Prevention</span>
+          <span class="divider-text-ar">الوقاية</span>
+        </div>
+      </div>
+
+      <!-- Section 5: Prevention Methods with new visualization -->
+      <section id="prevention">
+        <div class="section-content">
+          <div class="text-container">
+            <h2>
+              <span class="section-title-en">Liver Cancer Prevention</span>
+              <span class="section-title-ar">الوقاية من سرطان الكبد</span>
+            </h2>
+            <p>
+              <span class="section-text-en">
+                Prevention remains the most effective strategy against liver
+                cancer. Up to 80% of liver cancer cases could be prevented
+                through evidence-based interventions and lifestyle
+                modifications.
+              </span>
+              <span class="section-text-ar">
+                تظل الوقاية الاستراتيجية الأكثر فعالية ضد سرطان الكبد. يمكن
+                الوقاية من ما يصل إلى 80٪ من حالات سرطان الكبد من خلال التدخلات
+                القائمة على الأدلة وتعديلات نمط الحياة.
+              </span>
+            </p>
+            <ul class="advice-list">
+              <li>
+                <span class="advice-text-en">
+                  <strong>Hepatitis Vaccination:</strong> The hepatitis B
+                  vaccine is highly effective at preventing infection. Universal
+                  childhood vaccination programs have reduced liver cancer rates
+                  by up to 70% in high-risk regions.
+                </span>
+                <span class="advice-text-ar">
+                  <strong>التطعيم ضد التهاب الكبد:</strong> لقاح التهاب الكبد B
+                  فعال للغاية في منع العدوى. قللت برامج التطعيم العالمية للأطفال
+                  من معدلات سرطان الكبد بنسبة تصل إلى 70٪ في المناطق عالية
+                  الخطورة.
+                </span>
+              </li>
+              <li>
+                <span class="advice-text-en">
+                  <strong>Hepatitis Screening and Treatment:</strong> Regular
+                  screening for hepatitis B and C, followed by appropriate
+                  antiviral therapy for those infected, significantly reduces
+                  the risk of developing liver cancer.
+                </span>
+                <span class="advice-text-ar">
+                  <strong>فحص وعلاج التهاب الكبد:</strong> الفحص المنتظم لالتهاب
+                  الكبد B وC، يليه العلاج المضاد للفيروسات المناسب للمصابين،
+                  يقلل بشكل كبير من خطر الإصابة بسرطان الكبد.
+                </span>
+              </li>
+              <li>
+                <span class="advice-text-en">
+                  <strong>Moderate Alcohol Consumption:</strong> Limiting
+                  alcohol intake to no more than one drink per day for women and
+                  two for men can prevent alcohol-related liver damage that may
+                  lead to cancer.
+                </span>
+                <span class="advice-text-ar">
+                  <strong>الاستهلاك المعتدل للكحول:</strong> الحد من تناول
+                  الكحول إلى ما لا يزيد عن مشروب واحد يوميًا للنساء واثنين
+                  للرجال يمكن أن يمنع تلف الكبد المرتبط بالكحول الذي قد يؤدي إلى
+                  السرطان.
+                </span>
+              </li>
+              <li>
+                <span class="advice-text-en">
+                  <strong>Maintain Healthy Weight:</strong> Obesity increases
+                  liver cancer risk by 1.5-4 times. Regular physical activity
+                  and a balanced diet rich in fruits, vegetables, and whole
+                  grains help maintain liver health.
+                </span>
+                <span class="advice-text-ar">
+                  <strong>الحفاظ على وزن صحي:</strong> تزيد السمنة من خطر
+                  الإصابة بسرطان الكبد بمقدار 1.5-4 مرات. تساعد ممارسة النشاط
+                  البدني بانتظام واتباع نظام غذائي متوازن غني بالفواكه والخضروات
+                  والحبوب الكاملة في الحفاظ على صحة الكبد.
+                </span>
+              </li>
+              <li>
+                <span class="advice-text-en">
+                  <strong>Avoid Aflatoxin Exposure:</strong> Properly store
+                  grains and nuts in cool, dry conditions. Discard any food
+                  showing signs of mold. In high-risk regions, specialized
+                  testing and food safety programs can reduce exposure.
+                </span>
+                <span class="advice-text-ar">
+                  <strong>تجنب التعرض للأفلاتوكسين:</strong> تخزين الحبوب
+                  والمكسرات بشكل صحيح في ظروف باردة وجافة. تخلص من أي طعام يظهر
+                  عليه علامات العفن. في المناطق عالية الخطورة، يمكن أن تقلل
+                  الاختبارات المتخصصة وبرامج سلامة الأغذية من التعرض.
+                </span>
+              </li>
+              <li>
+                <span class="advice-text-en">
+                  <strong>Regular Screening:</strong> For those at high risk
+                  (cirrhosis, chronic hepatitis, family history), regular
+                  ultrasound examinations every 6 months can detect liver cancer
+                  at early, treatable stages.
+                </span>
+                <span class="advice-text-ar">
+                  <strong>الفحص المنتظم:</strong> بالنسبة للأشخاص المعرضين لخطر
+                  كبير (تليف الكبد، التهاب الكبد المزمن، تاريخ عائلي)، يمكن أن
+                  تكشف فحوصات الموجات فوق الصوتية المنتظمة كل 6 أشهر عن سرطان
+                  الكبد في مراحل مبكرة قابلة للعلاج.
+                </span>
+              </li>
+            </ul>
+            <p>
+              <span class="section-text-en">
+                Our AI platform can help identify those at highest risk,
+                enabling personalized prevention strategies and monitoring
+                protocols. Remember that early intervention is key to preventing
+                liver cancer or detecting it at its most treatable stage.
+              </span>
+              <span class="section-text-ar">
+                يمكن أن تساعد منصة الذكاء الاصطناعي لدينا في تحديد الأشخاص
+                الأكثر عرضة للخطر، مما يتيح استراتيجيات وقائية شخصية وبروتوكولات
+                مراقبة. تذكر أن التدخل المبكر هو المفتاح لمنع سرطان الكبد أو
+                اكتشافه في مرحلته الأكثر قابلية للعلاج.
+              </span>
+            </p>
+            <div class="auth-buttons">
+              <a href="login.html" class="auth-button">
+                <i class="fas fa-sign-in-alt"></i>
+                <span class="section-text-en">Start Your Assessment</span>
+                <span class="section-text-ar">ابدأ التقييم الخاص بك</span>
+              </a>
+            </div>
+          </div>
+          <div class="visual-container">
+            <div class="prevention-visualization">
+              <div class="prevention-container">
+                <div class="prevention-wheel">
+                  <div class="prevention-item">
+                    <i class="fas fa-syringe prevention-icon"></i>
+                    <div class="prevention-label">Hepatitis Vaccination</div>
+                  </div>
+                  <div class="prevention-item">
+                    <i class="fas fa-search prevention-icon"></i>
+                    <div class="prevention-label">Regular Screening</div>
+                  </div>
+                  <div class="prevention-item">
+                    <i class="fas fa-wine-glass-alt prevention-icon"></i>
+                    <div class="prevention-label">Limit Alcohol</div>
+                  </div>
+                  <div class="prevention-item">
+                    <i class="fas fa-weight prevention-icon"></i>
+                    <div class="prevention-label">Healthy Weight</div>
+                  </div>
+                  <div class="prevention-item">
+                    <i class="fas fa-seedling prevention-icon"></i>
+                    <div class="prevention-label">Avoid Aflatoxins</div>
+                  </div>
+                  <div class="prevention-item">
+                    <i class="fas fa-pills prevention-icon"></i>
+                    <div class="prevention-label">Treat Hepatitis</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+      <p>
+        <span class="footer-text-en">
+          &copy; 2024 Liver Cancer Detection AI. Pioneering the future of early
+          cancer detection through artificial intelligence and machine learning.
+        </span>
+        <span class="footer-text-ar">
+          &copy; 2024 الذكاء الاصطناعي للكشف عن سرطان الكبد. رائدة في مستقبل
+          الكشف المبكر عن السرطان من خلال الذكاء الاصطناعي والتعلم الآلي.
+        </span>
+      </p>
+      <p>
+        <span class="footer-text-en">
+          Contact our team:
+          <a href="mailto:livercancerdetectionai@gmail.com"
+            >livercancerdetectionai@gmail.com</a
+          >
+        </span>
+        <span class="footer-text-ar">
+          تواصل مع فريقنا:
+          <a href="mailto:livercancerdetectionai@gmail.com"
+            >livercancerdetectionai@gmail.com</a
+          >
+        </span>
+      </p>
+    </footer>
+
+    <!-- JavaScript for Animations and Page Load -->
+    <script>
+      // DOM Elements
+      const pageTransition = document.getElementById("page-transition");
+      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const mobileMenuClose = document.getElementById("mobile-menu-close");
+      const logoutBtn = document.getElementById("logout-btn");
+      const langSwitcher = document.getElementById("lang-switcher");
+      const mobileLangSwitcher = document.getElementById(
+        "mobile-lang-switcher"
+      );
+      const htmlRoot = document.getElementById("htmlRoot");
+      const langSwitch = document.getElementById("langSwitch");
+      let isEnglish = true;
+
+      // Language elements
+      const titleTextEn = document.querySelectorAll(".title-text-en");
+      const titleTextAr = document.querySelectorAll(".title-text-ar");
+      const navTextEn = document.querySelectorAll(".nav-text-en");
+      const navTextAr = document.querySelectorAll(".nav-text-ar");
+      const menuTextEn = document.querySelectorAll(".menu-text-en");
+      const menuTextAr = document.querySelectorAll(".menu-text-ar");
+      const langTextEn = document.querySelectorAll(".lang-text-en");
+      const langTextAr = document.querySelectorAll(".lang-text-ar");
+      const sectionTitleEn = document.querySelectorAll(".section-title-en");
+      const sectionTitleAr = document.querySelectorAll(".section-title-ar");
+      const sectionTextEn = document.querySelectorAll(".section-text-en");
+      const sectionTextAr = document.querySelectorAll(".section-text-ar");
+      const dividerTextEn = document.querySelectorAll(".divider-text-en");
+      const dividerTextAr = document.querySelectorAll(".divider-text-ar");
+      const statTitleEn = document.querySelectorAll(".stat-title-en");
+      const statTitleAr = document.querySelectorAll(".stat-title-ar");
+      const statTextEn = document.querySelectorAll(".stat-text-en");
+      const statTextAr = document.querySelectorAll(".stat-text-ar");
+      const adviceTextEn = document.querySelectorAll(".advice-text-en");
+      const adviceTextAr = document.querySelectorAll(".advice-text-ar");
+      const footerTextEn = document.querySelectorAll(".footer-text-en");
+      const footerTextAr = document.querySelectorAll(".footer-text-ar");
+
+      // Add page transition effect
+      document.addEventListener("DOMContentLoaded", () => {
+        // Show page transition
+        pageTransition.classList.add("active");
+
+        // Hide page transition after a delay
+        setTimeout(() => {
+          pageTransition.classList.add("exit");
+        }, 300);
+
+        // Create hexagon background
+        createHexagons();
+
+        // Create particle background
+        createParticles();
+
+        // Set up intersection observer for animations
+        setupIntersectionObserver();
+
+        // Set initial language
+        setInitialLanguage();
+
+        // Setup stage indicators interaction
+        setupStageIndicators();
+
+        // Setup scroll button visibility
+        window.addEventListener("scroll", toggleScrollButton);
+
+        // Setup chart animations
+        setupChartAnimations();
+      });
+
+      // Create hexagon background
+      function createHexagons() {
+        const animatedBg = document.getElementById("animated-bg");
+        const hexagonCount = 20;
+
+        for (let i = 0; i < hexagonCount; i++) {
+          const hexagon = document.createElement("div");
+          hexagon.classList.add("hexagon");
+
+          // Random position
+          const posX = Math.random() * 100;
+          hexagon.style.left = `${posX}%`;
+          hexagon.style.top = `${Math.random() * 100}%`;
+
+          // Random size
+          const size = Math.random() * 50 + 50;
+          hexagon.style.width = `${size}px`;
+          hexagon.style.height = `${size * 1.1}px`;
+
+          // Random opacity
+          const opacity = Math.random() * 0.1 + 0.05;
+          hexagon.style.opacity = opacity;
+
+          // Random animation delay
+          const delay = Math.random() * 20;
+          hexagon.style.animationDelay = `${delay}s`;
+
+          // Random animation duration
+          const duration = Math.random() * 10 + 15;
+          hexagon.style.animationDuration = `${duration}s`;
+
+          animatedBg.appendChild(hexagon);
+        }
+      }
+
+      // Create floating particles in the background
+      function createParticles() {
+        const particlesContainer = document.getElementById("particles");
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          particle.classList.add("particle");
+
+          // Random position
+          const posX = Math.random() * 100;
+          const posY = Math.random() * 100;
+          particle.style.left = `${posX}%`;
+          particle.style.top = `${posY}%`;
+
+          // Random size
+          const size = Math.random() * 3 + 1;
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+
+          // Random opacity
+          const opacity = Math.random() * 0.5 + 0.1;
+          particle.style.opacity = opacity;
+
+          // Random animation delay
+          const delay = Math.random() * 15;
+          particle.style.animationDelay = `${delay}s`;
+
+          // Random animation duration
+          const duration = Math.random() * 10 + 10;
+          particle.style.animationDuration = `${duration}s`;
+
+          particlesContainer.appendChild(particle);
+        }
+      }
+
+      // Setup chart animations
+      function setupChartAnimations() {
+        // Bar chart animation
+        const barChartObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const chartBars = entry.target.querySelectorAll(".chart-bar");
+                chartBars.forEach((bar) => {
+                  bar.classList.add("animated");
+                });
+                barChartObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.3 }
+        );
+
+        const barChart = document.querySelector(".bar-chart");
+        if (barChart) {
+          barChartObserver.observe(barChart);
+        }
+
+        // Gender pie animation
+        const genderObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const genderPie = entry.target.querySelector(".gender-pie");
+                if (genderPie) {
+                  genderPie.classList.add("animated");
+                }
+                genderObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.3 }
+        );
+
+        const genderChart = document.querySelector(".gender-chart");
+        if (genderChart) {
+          genderObserver.observe(genderChart);
+        }
+
+        // Age bars animation
+        const ageObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const ageBars = entry.target.querySelectorAll(".age-bar");
+                const ageContainers =
+                  entry.target.querySelectorAll(".age-bar-container");
+
+                ageBars.forEach((bar) => {
+                  bar.classList.add("animated");
+                });
+
+                ageContainers.forEach((container) => {
+                  container.classList.add("animated");
+                });
+
+                ageObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.3 }
+        );
+
+        const ageBars = document.querySelector(".age-bars");
+        if (ageBars) {
+          ageObserver.observe(ageBars);
+        }
+      }
+
+      // Toggle scroll button visibility
+      function toggleScrollButton() {
+        const scrollBtn = document.querySelector(".scroll-btn");
+        if (window.scrollY > 300) {
+          scrollBtn.style.opacity = "1";
+          scrollBtn.style.transform = "scale(1)";
+          scrollBtn.style.pointerEvents = "auto";
+        } else {
+          scrollBtn.style.opacity = "0";
+          scrollBtn.style.transform = "scale(0)";
+          scrollBtn.style.pointerEvents = "none";
+        }
+      }
+
+      // Setup stage indicators interaction
+      function setupStageIndicators() {
+        const stageInfo = document.querySelector(".stage-info");
+        const stageMarkers = document.querySelectorAll(".stage-marker");
+
+        const stageDetails = [
+          "Stage 0: Very early, 70-90% survival",
+          "Stage A: Early, 50-70% survival",
+          "Stage B: Intermediate, 16-30% survival",
+          "Stage C: Advanced, 6-12 months survival",
+          "Stage D: Terminal, 3-4 months survival",
+        ];
+
+        stageMarkers.forEach((marker, index) => {
+          marker.addEventListener("click", () => {
+            // Remove active class from all markers
+            stageMarkers.forEach((m) => m.classList.remove("active"));
+
+            // Add active class to clicked marker
+            marker.classList.add("active");
+
+            // Update info text
+            stageInfo.textContent = stageDetails[index];
+            stageInfo.style.animation = "none";
+
+            // Trigger reflow
+            void stageInfo.offsetWidth;
+
+            // Add animation again
+            stageInfo.style.animation = "info-appear 5s infinite";
+          });
+        });
+      }
+
+      // Set initial language based on localStorage or default to English
+      function setInitialLanguage() {
+        const currentLang = localStorage.getItem("language") || "en";
+        setLanguage(currentLang);
+      }
+
+      // Set language
+      function setLanguage(lang) {
+        localStorage.setItem("language", lang);
+
+        if (lang === "ar") {
+          htmlRoot.setAttribute("dir", "rtl");
+          htmlRoot.setAttribute("lang", "ar");
+
+          // Update language switch button text
+          langSwitch.querySelector("span").textContent =
+            "التبديل إلى الإنجليزية";
+
+          // Hide English elements, show Arabic elements
+          hideElements(titleTextEn);
+          showElements(titleTextAr);
+          hideElements(navTextEn);
+          showElements(navTextAr);
+          hideElements(menuTextEn);
+          showElements(menuTextAr);
+          hideElements(langTextEn);
+          showElements(langTextAr);
+          hideElements(sectionTitleEn);
+          showElements(sectionTitleAr);
+          hideElements(sectionTextEn);
+          showElements(sectionTextAr);
+          hideElements(dividerTextEn);
+          showElements(dividerTextAr);
+          hideElements(statTitleEn);
+          showElements(statTitleAr);
+          hideElements(statTextEn);
+          showElements(statTextAr);
+          hideElements(adviceTextEn);
+          showElements(adviceTextAr);
+          hideElements(footerTextEn);
+          showElements(footerTextAr);
+        } else {
+          htmlRoot.setAttribute("dir", "ltr");
+          htmlRoot.setAttribute("lang", "en");
+
+          // Update language switch button text
+          langSwitch.querySelector("span").textContent = "Switch to Arabic";
+
+          // Hide Arabic elements, show English elements
+          showElements(titleTextEn);
+          hideElements(titleTextAr);
+          showElements(navTextEn);
+          hideElements(navTextAr);
+          showElements(menuTextEn);
+          hideElements(menuTextAr);
+          showElements(langTextEn);
+          hideElements(langTextAr);
+          showElements(sectionTitleEn);
+          hideElements(sectionTitleAr);
+          showElements(sectionTextEn);
+          hideElements(sectionTextAr);
+          showElements(dividerTextEn);
+          hideElements(dividerTextAr);
+          showElements(statTitleEn);
+          hideElements(statTitleAr);
+          showElements(statTextEn);
+          hideElements(statTextAr);
+          showElements(adviceTextEn);
+          hideElements(adviceTextAr);
+          showElements(footerTextEn);
+          hideElements(footerTextAr);
+        }
+      }
+
+      // Helper function to hide elements
+      function hideElements(elements) {
+        elements.forEach((el) => {
+          el.style.display = "none";
+        });
+      }
+
+      // Helper function to show elements
+      function showElements(elements) {
+        elements.forEach((el) => {
+          el.style.display = "inline-block";
+        });
+      }
+
+      // Language switcher event listener
+      langSwitcher.addEventListener("click", () => {
+        const currentLang = localStorage.getItem("language") || "en";
+        const newLang = currentLang === "en" ? "ar" : "en";
+
+        // Add switching class for animation
+        langSwitcher.classList.add("switching");
+
+        setTimeout(() => {
+          setLanguage(newLang);
+          langSwitcher.classList.remove("switching");
+        }, 250);
+      });
+
+      // Mobile language switcher event listener
+      mobileLangSwitcher.addEventListener("click", () => {
+        const currentLang = localStorage.getItem("language") || "en";
+        const newLang = currentLang === "en" ? "ar" : "en";
+        setLanguage(newLang);
+      });
+
+      // Language switch button event listener
+      langSwitch.addEventListener("click", () => {
+        const currentLang = localStorage.getItem("language") || "en";
+        const newLang = currentLang === "en" ? "ar" : "en";
+
+        // Add switching class for animation
+        langSwitch.classList.add("switching");
+
+        setTimeout(() => {
+          setLanguage(newLang);
+          langSwitch.classList.remove("switching");
+        }, 250);
+      });
+
+      // Mobile menu event listeners
+      mobileMenuBtn.addEventListener("click", () => {
+        mobileMenu.classList.add("active");
+      });
+
+      mobileMenuClose.addEventListener("click", () => {
+        mobileMenu.classList.remove("active");
+      });
+
+      // Close mobile menu when clicking on a link
+      const mobileMenuLinks = document.querySelectorAll(".mobile-menu-items a");
+      mobileMenuLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("active");
+        });
+      });
+
+      // Setup intersection observer for animations
+      function setupIntersectionObserver() {
+        const sections = document.querySelectorAll("section");
+        const sectionDividers = document.querySelectorAll(".section-divider");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("in-view");
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+
+        sectionDividers.forEach((divider) => {
+          observer.observe(divider);
+        });
+      }
+
+      // Risk hexagons animation
+      const riskObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const riskHexes = entry.target.querySelectorAll(".risk-hex");
+
+              riskHexes.forEach((hex, index) => {
+                setTimeout(() => {
+                  hex.classList.add("animated");
+                }, index * 150);
+              });
+
+              riskObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      const riskHexagons = document.querySelector(".risk-hexagons");
+      if (riskHexagons) {
+        riskObserver.observe(riskHexagons);
+      }
+    </script>
+  </body>
+</html>

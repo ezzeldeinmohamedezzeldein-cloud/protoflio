@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - Liver Cancer Detection AI</title>
+    <link rel="icon" href="./styleimages/logo.avif" type="image/x-icon" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Tajawal:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="app-config.js"></script>
+
+    <style>
+      /* Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to bottom right, #0a0a0a, #121212);
+        color: #e0e0e0;
+        padding: 1rem;
+        position: relative;
+        overflow-x: hidden;
+        font-family: "Roboto", sans-serif;
+        opacity: 0;
+        animation: fadeIn 1s ease-out forwards;
+      }
+
+      /* RTL Support */
+      html[dir="rtl"] body {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      /* Page load animation */
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Main container */
+      .main-container {
+        display: flex;
+        width: 100%;
+        max-width: 1200px;
+        min-height: 600px;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        margin: 2rem 0;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: slideIn 0.8s ease-out forwards;
+        opacity: 0;
+      }
+
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .main-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px -15px rgba(0, 188, 212, 0.3),
+          0 15px 30px -10px rgba(106, 27, 154, 0.2);
+      }
+
+      /* Image section */
+      .image-section {
+        flex: 1;
+        background-image: url("./styleimages/sinn up.avif");
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .image-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 188, 212, 0.7),
+          rgba(106, 27, 154, 0.7)
+        );
+        opacity: 0.6;
+      }
+
+      .image-content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem;
+        text-align: center;
+        color: white;
+      }
+
+      .image-content h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-family: "Orbitron", sans-serif;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      html[dir="rtl"] .image-content h2 {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .image-content p {
+        font-size: 1.25rem;
+        max-width: 80%;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      /* Signup section */
+      .signup-section {
+        flex: 1;
+        background-color: rgba(18, 18, 18, 0.95);
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        animation: fadeInRight 0.8s ease-out forwards;
+        opacity: 0;
+      }
+
+      @keyframes fadeInRight {
+        0% {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .signup-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+
+      .logo-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 60px;
+        height: 60px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo:hover {
+        transform: scale(1.1);
+      }
+
+      .logo-text {
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.875rem;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      html[dir="rtl"] .logo-text {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .logo-text:hover {
+        color: #6a1b9a;
+      }
+
+      .card-header {
+        margin-bottom: 2rem;
+      }
+
+      .card-title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+      }
+
+      html[dir="rtl"] .card-title {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .card-description {
+        text-align: center;
+        color: #e0e0e0;
+        margin-top: 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+        transition: transform 0.2s ease;
+      }
+
+      .form-group:hover {
+        transform: translateX(5px);
+      }
+
+      html[dir="rtl"] .form-group:hover {
+        transform: translateX(-5px);
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #e0e0e0;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+      }
+
+      .form-group:hover .form-label {
+        color: #00bcd4;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 0.75rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        color: #00bcd4;
+        transition: color 0.3s ease;
+      }
+
+      html[dir="rtl"] .input-icon {
+        left: auto;
+        right: 0.75rem;
+      }
+
+      .input-wrapper:hover .input-icon {
+        color: #6a1b9a;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 1rem 0.75rem 1rem 2.75rem;
+        background-color: rgba(30, 30, 30, 0.7);
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        border-radius: 0.25rem;
+        color: #e0e0e0;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      html[dir="rtl"] .form-input {
+        padding: 1rem 2.75rem 1rem 0.75rem;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #00bcd4;
+        box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+      }
+
+      .form-input:hover {
+        background-color: rgba(35, 35, 35, 0.8);
+        border-color: rgba(0, 188, 212, 0.5);
+      }
+
+      .error-message {
+        padding: 0.75rem;
+        margin-top: 1rem;
+        border-radius: 0.25rem;
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+        font-size: 0.875rem;
+        display: none;
+      }
+
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        color: white;
+        border: none;
+        border-radius: 9999px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-top: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      html[dir="rtl"] .btn {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(106, 27, 154, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        background: linear-gradient(to right, #00d4e4, #7c21b3);
+      }
+
+      html[dir="rtl"] .btn:hover {
+        background: linear-gradient(to left, #00d4e4, #7c21b3);
+      }
+
+      .btn:active {
+        transform: translateY(-1px);
+      }
+
+      .btn:disabled {
+        background: linear-gradient(to right, #424242, #616161);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      html[dir="rtl"] .btn:disabled {
+        background: linear-gradient(to left, #424242, #616161);
+      }
+
+      .btn-icon {
+        margin-right: 0.5rem;
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+
+      html[dir="rtl"] .btn-icon {
+        margin-right: 0;
+        margin-left: 0.5rem;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top: 3px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 0.5rem;
+      }
+
+      html[dir="rtl"] .spinner {
+        margin-right: 0;
+        margin-left: 0.5rem;
+      }
+
+      .card-footer {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .text-sm {
+        font-size: 1rem;
+      }
+
+      .text-muted {
+        color: #94a3b8;
+        transition: color 0.3s ease;
+      }
+
+      .text-muted:hover {
+        color: #cbd5e1;
+      }
+
+      .link {
+        color: #00bcd4;
+        text-decoration: none;
+        transition: color 0.3s ease, transform 0.3s ease;
+        display: inline-block;
+      }
+
+      .link:hover {
+        color: #6a1b9a;
+        transform: translateY(-2px);
+      }
+
+      .footer {
+        margin-top: 2rem;
+        text-align: center;
+        color: #e0e0e0;
+        font-size: 0.875rem;
+        width: 100%;
+      }
+
+      .footer p {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links {
+        margin-top: 0.5rem;
+      }
+
+      .footer-link {
+        color: #00bcd4;
+        text-decoration: none;
+        transition: color 0.3s ease, transform 0.3s ease;
+        margin: 0 0.5rem;
+        display: inline-block;
+      }
+
+      .footer-link:hover {
+        color: #6a1b9a;
+        transform: translateY(-2px);
+      }
+
+      /* Center Loader */
+      .center-loader {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.95);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .loader-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .loader-spinner {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        margin-bottom: 2rem;
+      }
+
+      .loader-spinner-outer {
+        width: 100%;
+        height: 100%;
+        border: 6px solid rgba(0, 188, 212, 0.1);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+      }
+
+      .loader-spinner-middle {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
+        border: 6px solid rgba(106, 27, 154, 0.1);
+        border-top-color: #6a1b9a;
+        border-radius: 50%;
+        animation: spin 2s linear infinite reverse;
+      }
+
+      .loader-spinner-inner {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        width: calc(100% - 60px);
+        height: calc(100% - 60px);
+        border: 6px solid rgba(0, 188, 212, 0.2);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .loader-message {
+        color: #00bcd4;
+        font-size: 1.5rem;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        margin-bottom: 1rem;
+      }
+
+      html[dir="rtl"] .loader-message {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .loader-submessage {
+        color: #e0e0e0;
+        font-size: 1.125rem;
+        max-width: 80%;
+        margin: 0 auto 1.25rem;
+      }
+
+      .loader-progress-bar {
+        width: 250px;
+        height: 6px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 1.25rem;
+      }
+
+      .loader-progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        border-radius: 3px;
+        transition: width 0.5s;
+      }
+
+      html[dir="rtl"] .loader-progress-fill {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .loader-progress-text {
+        color: #e0e0e0;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      /* Home button */
+      .home-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+
+      html[dir="rtl"] .home-btn {
+        left: auto;
+        right: 20px;
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .home-btn:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.3);
+      }
+
+      .home-btn:active {
+        transform: translateY(-2px);
+      }
+
+      .home-btn i {
+        font-size: 24px;
+      }
+
+      /* Language switcher */
+      .lang-switcher {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      html[dir="rtl"] .lang-switcher {
+        right: auto;
+        left: 20px;
+      }
+
+      .lang-btn {
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        font-size: 16px;
+      }
+
+      html[dir="rtl"] .lang-btn {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .lang-btn:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.3);
+      }
+
+      .lang-btn:active {
+        transform: translateY(-2px);
+      }
+
+      /* Animations */
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive design */
+      @media (max-width: 992px) {
+        .main-container {
+          flex-direction: column;
+          max-width: 600px;
+        }
+
+        .image-section {
+          min-height: 300px;
+        }
+
+        .signup-section {
+          padding: 2rem 1.5rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .main-container {
+          margin: 1rem 0;
+        }
+
+        .image-section {
+          min-height: 200px;
+        }
+
+        .image-content h2 {
+          font-size: 2rem;
+        }
+
+        .image-content p {
+          font-size: 1rem;
+        }
+
+        .signup-section {
+          padding: 1.5rem 1rem;
+        }
+
+        .card-title {
+          font-size: 1.75rem;
+        }
+      }
+
+      /* Language specific display */
+      html[dir="ltr"] [class*="-ar"] {
+        display: none;
+      }
+
+      html[dir="rtl"] [class*="-en"] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Home Button -->
+    <button class="home-btn" id="home-btn" title="Go to Home">
+      <i class="fas fa-home"></i>
+    </button>
+
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+      <button class="lang-btn" id="lang-switcher">
+        <span class="lang-text-en">ع</span>
+        <span class="lang-text-ar">EN</span>
+      </button>
+    </div>
+
+    <!-- Center Loader (hidden by default) -->
+    <div class="center-loader" id="center-loader" style="display: none">
+      <div class="loader-content">
+        <div class="loader-spinner">
+          <div class="loader-spinner-outer"></div>
+          <div class="loader-spinner-middle"></div>
+          <div class="loader-spinner-inner"></div>
+        </div>
+        <div class="loader-message">
+          <span class="loader-message-en">Creating Account</span>
+          <span class="loader-message-ar">إنشاء حساب</span>
+        </div>
+        <div class="loader-submessage">
+          <span class="loader-submessage-en"
+            >Please wait while we set up your account...</span
+          >
+          <span class="loader-submessage-ar"
+            >يرجى الانتظار بينما نقوم بإعداد حسابك...</span
+          >
+        </div>
+        <div class="loader-progress-bar">
+          <div
+            class="loader-progress-fill"
+            id="loader-progress-fill"
+            style="width: 50%"
+          ></div>
+        </div>
+        <div class="loader-progress-text" id="loader-progress-text">50%</div>
+      </div>
+    </div>
+
+    <div class="main-container">
+      <!-- Image Section -->
+      <div class="image-section">
+        <div class="image-content">
+          <h2>
+            <span class="image-title-en">Join Our Platform</span>
+            <span class="image-title-ar">انضم إلى منصتنا</span>
+          </h2>
+          <p>
+            <span class="image-text-en"
+              >Create an account to access advanced cancer detection technology
+              and personalized healthcare solutions</span
+            >
+            <span class="image-text-ar"
+              >أنشئ حسابًا للوصول إلى تقنية متقدمة للكشف عن السرطان وحلول رعاية
+              صحية مخصصة</span
+            >
+          </p>
+        </div>
+      </div>
+
+      <!-- Signup Section -->
+      <div class="signup-section">
+        <div class="signup-container">
+          <div class="logo-container">
+            <div class="logo-wrapper">
+              <img src="./styleimages/logo.avif" alt="Logo" class="logo" />
+              <h1 class="logo-text">
+                <span class="logo-text-en">Detection AI</span>
+                <span class="logo-text-ar">الكشف بالذكاء الاصطناعي</span>
+              </h1>
+            </div>
+          </div>
+
+          <div class="card-header">
+            <h2 class="card-title">
+              <span class="title-text-en">Sign Up</span>
+              <span class="title-text-ar">إنشاء حساب</span>
+            </h2>
+            <p class="card-description">
+              <span class="description-text-en"
+                >Create an account to access our cancer detection services</span
+              >
+              <span class="description-text-ar"
+                >أنشئ حسابًا للوصول إلى خدمات الكشف عن السرطان</span
+              >
+            </p>
+          </div>
+
+          <form id="signup-form">
+            <div class="form-group">
+              <label for="name" class="form-label">
+                <span class="label-text-en">Full Name</span>
+                <span class="label-text-ar">الاسم الكامل</span>
+              </label>
+              <div class="input-wrapper">
+                <svg
+                  class="input-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  ></path>
+                </svg>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="form-input"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">
+                <span class="label-text-en">Email</span>
+                <span class="label-text-ar">البريد الإلكتروني</span>
+              </label>
+              <div class="input-wrapper">
+                <svg
+                  class="input-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-input"
+                  placeholder="your.email@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="form-label">
+                <span class="label-text-en">Password</span>
+                <span class="label-text-ar">كلمة المرور</span>
+              </label>
+              <div class="input-wrapper">
+                <svg
+                  class="input-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  ></path>
+                </svg>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-input"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="age" class="form-label">
+                <span class="label-text-en">Age</span>
+                <span class="label-text-ar">العمر</span>
+              </label>
+              <div class="input-wrapper">
+                <svg
+                  class="input-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  class="form-input"
+                  required
+                />
+              </div>
+            </div>
+
+            <div
+              id="error-message"
+              class="error-message"
+              style="display: none"
+            ></div>
+
+            <button type="submit" id="signup-btn" class="btn">
+              <svg
+                class="btn-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                ></path>
+              </svg>
+              <span class="btn-text-en">Create Account</span>
+              <span class="btn-text-ar">إنشاء حساب</span>
+            </button>
+
+            <div class="card-footer">
+              <div class="text-center text-sm text-muted">
+                <span class="footer-text-en">Already have an account?</span>
+                <span class="footer-text-ar">هل لديك حساب بالفعل؟</span>
+                <a href="login.html" class="link">
+                  <span class="link-text-en">Login here</span>
+                  <span class="link-text-ar">تسجيل الدخول هنا</span>
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <span class="footer-copyright-en"
+          >© 2024 Liver Cancer Detection AI. All rights reserved.</span
+        >
+        <span class="footer-copyright-ar"
+          >© 2024 الذكاء الاصطناعي للكشف عن سرطان الكبد. جميع الحقوق
+          محفوظة.</span
+        >
+      </p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">
+          <span class="footer-link-text-en">Privacy Policy</span>
+          <span class="footer-link-text-ar">سياسة الخصوصية</span>
+        </a>
+        <a href="#" class="footer-link">
+          <span class="footer-link-text-en">Terms of Service</span>
+          <span class="footer-link-text-ar">شروط الخدمة</span>
+        </a>
+        <a href="mailto:livercancerdetectionai@gmail.com" class="footer-link">
+          <span class="footer-link-text-en">Contact Us</span>
+          <span class="footer-link-text-ar">اتصل بنا</span>
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      // DOM Elements
+      const htmlRoot = document.getElementById("htmlRoot");
+      const signupForm = document.getElementById("signup-form");
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const ageInput = document.getElementById("age");
+      const signupBtn = document.getElementById("signup-btn");
+      const errorMessage = document.getElementById("error-message");
+      const centerLoader = document.getElementById("center-loader");
+      const loaderProgressFill = document.getElementById(
+        "loader-progress-fill"
+      );
+      const loaderProgressText = document.getElementById(
+        "loader-progress-text"
+      );
+      const langSwitcher = document.getElementById("lang-switcher");
+      const homeBtn = document.getElementById("home-btn");
+
+      // Set initial language based on localStorage or default to English
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentLang = localStorage.getItem("language") || "en";
+        setLanguage(currentLang);
+      });
+
+      // Language switcher event listener
+      langSwitcher.addEventListener("click", function () {
+        const currentLang = localStorage.getItem("language") || "en";
+        const newLang = currentLang === "en" ? "ar" : "en";
+        setLanguage(newLang);
+      });
+
+      // Home button event listener
+      homeBtn.addEventListener("click", function () {
+        window.location.href = "./home.html";
+      });
+
+      // Set language function
+      function setLanguage(lang) {
+        localStorage.setItem("language", lang);
+
+        if (lang === "ar") {
+          htmlRoot.setAttribute("dir", "rtl");
+          htmlRoot.setAttribute("lang", "ar");
+        } else {
+          htmlRoot.setAttribute("dir", "ltr");
+          htmlRoot.setAttribute("lang", "en");
+        }
+      }
+
+      // Function to update loader progress
+      function updateLoaderProgress(percent) {
+        loaderProgressFill.style.width = `${percent}%`;
+        loaderProgressText.textContent = `${percent}%`;
+      }
+
+      // Handle signup form submission
+      signupForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const age = ageInput.value.trim();
+
+        // Basic validation
+        if (!name || !email || !password || !age) {
+          const currentLang = localStorage.getItem("language") || "en";
+          errorMessage.textContent =
+            currentLang === "ar"
+              ? "يرجى ملء جميع الحقول المطلوبة"
+              : "Please fill in all required fields";
+          errorMessage.style.display = "block";
+          return;
+        }
+
+        // Hide any previous error messages
+        errorMessage.style.display = "none";
+
+        // Disable the signup button and show loading state
+        signupBtn.disabled = true;
+
+        const currentLang = localStorage.getItem("language") || "en";
+        if (currentLang === "ar") {
+          signupBtn.innerHTML =
+            '<span class="spinner"></span>جاري إنشاء الحساب...';
+        } else {
+          signupBtn.innerHTML =
+            '<span class="spinner"></span>Creating account...';
+        }
+
+        // Show the center loader
+        centerLoader.style.display = "flex";
+        updateLoaderProgress(30);
+
+        try {
+          // Call the signup API
+          const response = await fetch(
+            `${BACKEND_NGROK.API}/api/patient/signup`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: name,
+                email: email,
+                password: password,
+                age: age,
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(
+              data.message || "Registration failed. Please try again."
+            );
+          }
+
+          updateLoaderProgress(70);
+
+          // Store authentication data
+          localStorage.setItem("authToken", data.token);
+          localStorage.setItem("patientId", data.patient._id);
+
+          // Update progress
+          updateLoaderProgress(100);
+
+          // Redirect to the AI web page after a short delay
+          setTimeout(() => {
+            window.location.href = "aiweb.html";
+          }, 1000);
+        } catch (error) {
+          console.error("Signup error:", error);
+
+          // Hide the center loader
+          centerLoader.style.display = "none";
+
+          // Show error message
+          const currentLang = localStorage.getItem("language") || "en";
+          if (currentLang === "ar") {
+            errorMessage.textContent =
+              "فشل التسجيل. " + (error.message || "يرجى المحاولة مرة أخرى.");
+          } else {
+            errorMessage.textContent =
+              "Registration failed. " + (error.message || "Please try again.");
+          }
+          errorMessage.style.display = "block";
+
+          // Reset the signup button
+          signupBtn.disabled = false;
+
+          if (currentLang === "ar") {
+            signupBtn.innerHTML =
+              '<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg><span class="btn-text-ar">إنشاء حساب</span>';
+          } else {
+            signupBtn.innerHTML =
+              '<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg><span class="btn-text-en">Create Account</span>';
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

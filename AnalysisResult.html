@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analysis Result - Liver Cancer Detection AI</title>
+    <link rel="icon" href="./styleimages/logo.avif" type="image/x-icon" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="app-config.js"></script>
+
+    <style>
+      /* Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: #0a0a0a;
+        color: #e0e0e0;
+        font-family: "Rajdhani", sans-serif;
+        opacity: 0;
+        animation: fadeInBlur 1.2s ease-out forwards;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 20%,
+            rgba(106, 27, 154, 0.05) 0%,
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            rgba(0, 188, 212, 0.05) 0%,
+            transparent 30%
+          );
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      /* RTL Support */
+      html[dir="rtl"] body {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      /* Page load animation */
+      @keyframes fadeInBlur {
+        0% {
+          opacity: 0;
+          filter: blur(10px);
+        }
+        100% {
+          opacity: 1;
+          filter: blur(0);
+        }
+      }
+
+      /* Navbar Styling */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(18, 18, 18, 0.9);
+        padding: 15px 30px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+          0 0 40px rgba(0, 188, 212, 0.1);
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: slideInDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s
+          forwards;
+      }
+
+      @keyframes slideInDown {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      html[dir="rtl"] .nav-left {
+        flex-direction: row-reverse;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+      }
+
+      html[dir="rtl"] .nav-right {
+        flex-direction: row-reverse;
+      }
+
+      nav img {
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+        transition: transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+          filter 0.5s ease;
+        margin-left: 15px;
+        filter: drop-shadow(0 0 8px rgba(0, 188, 212, 0.5));
+      }
+
+      html[dir="rtl"] nav img {
+        margin-left: 0;
+        margin-right: 15px;
+      }
+
+      nav img:hover {
+        transform: rotate(360deg) scale(1.1);
+        filter: drop-shadow(0 0 12px rgba(0, 188, 212, 0.8));
+      }
+
+      nav h1 {
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        font-size: 26px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        letter-spacing: 1px;
+      }
+
+      html[dir="rtl"] nav h1 {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      nav h1:hover {
+        color: #6a1b9a;
+        text-shadow: 0 0 15px rgba(106, 27, 154, 0.5);
+        letter-spacing: 2px;
+      }
+
+      /* Language Switcher */
+      .language-switcher {
+        display: flex;
+        align-items: center;
+        background-color: rgba(0, 188, 212, 0.1);
+        border-radius: 50px;
+        padding: 3px;
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .language-switcher::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to bottom right,
+          transparent,
+          rgba(0, 188, 212, 0.1),
+          transparent
+        );
+        transform: rotate(45deg);
+        animation: shimmerEffect 3s infinite linear;
+        pointer-events: none;
+      }
+
+      @keyframes shimmerEffect {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      .language-switcher:hover {
+        background-color: rgba(0, 188, 212, 0.2);
+        box-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+      }
+
+      .language-btn {
+        background: transparent;
+        border: none;
+        color: #e0e0e0;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+      }
+
+      .language-btn.active {
+        background-color: #00bcd4;
+        color: #121212;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .language-btn:hover:not(.active) {
+        color: #00bcd4;
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+      }
+
+      /* Navbar Logout Button Styling */
+      .nav-logout-btn {
+        padding: 8px 16px;
+        font-size: 15px;
+        background-color: transparent;
+        color: #00bcd4;
+        border: 2px solid #00bcd4;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-logout-btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+
+      .nav-logout-btn:hover::after {
+        left: 100%;
+      }
+
+      .nav-logout-btn i {
+        transition: transform 0.5s ease;
+      }
+
+      html[dir="rtl"] .nav-logout-btn i {
+        margin-left: 8px;
+        margin-right: 0;
+      }
+
+      .nav-logout-btn:hover {
+        background-color: #00bcd4;
+        color: #121212;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
+      }
+
+      .nav-logout-btn:hover i {
+        transform: rotate(360deg);
+      }
+
+      /* Main Container */
+      .main-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        flex: 1;
+      }
+
+      /* Analysis Result Card */
+      .result-card {
+        background: rgba(25, 25, 25, 0.7);
+        padding: 2.5rem;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.1);
+        margin-bottom: 2.5rem;
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        opacity: 0;
+        transform: translateY(40px);
+        animation: floatUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      @keyframes floatUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .result-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at top right,
+          rgba(106, 27, 154, 0.15),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .result-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at bottom left,
+          rgba(0, 188, 212, 0.15),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .result-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5),
+          0 0 30px rgba(0, 188, 212, 0.2);
+      }
+
+      .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        position: relative;
+      }
+
+      .result-header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 120px;
+        height: 3px;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        border-radius: 3px;
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      html[dir="rtl"] .result-header::after {
+        left: auto;
+        right: 0;
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .result-title {
+        color: #00bcd4;
+        font-size: 2.2rem;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        text-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+        position: relative;
+      }
+
+      .result-title::before {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 2px;
+        background: #6a1b9a;
+        bottom: -10px;
+        left: 0;
+      }
+
+      html[dir="rtl"] .result-title {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      html[dir="rtl"] .result-title::before {
+        left: auto;
+        right: 0;
+      }
+
+      /* Cancer Stage Container */
+      .stage-container {
+        background: rgba(30, 30, 30, 0.7);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.1);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        animation: revealIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.8s forwards;
+        position: relative;
+        width: 100%;
+        margin-bottom: 2.5rem;
+      }
+
+      @keyframes revealIn {
+        0% {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .stage-container:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        border-color: rgba(0, 188, 212, 0.4);
+      }
+
+      .stage-header {
+        background: linear-gradient(
+          to right,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+      }
+
+      html[dir="rtl"] .stage-header {
+        background: linear-gradient(
+          to left,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+      }
+
+      .stage-title {
+        color: #00bcd4;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      html[dir="rtl"] .stage-title {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .stage-title i {
+        margin-right: 12px;
+        font-size: 1.3rem;
+        color: #6a1b9a;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      html[dir="rtl"] .stage-title i {
+        margin-right: 0;
+        margin-left: 12px;
+      }
+
+      .stage-value-display {
+        position: relative;
+        width: 70px;
+        height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3),
+          inset 0 0 15px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(0, 188, 212, 0.3);
+        overflow: hidden;
+      }
+
+      .stage-value-display::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 188, 212, 0.2),
+          transparent
+        );
+        opacity: 0.5;
+        z-index: 1;
+      }
+
+      .stage-value-display::after {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 10px rgba(0, 188, 212, 0.3);
+        z-index: 1;
+      }
+
+      .stage-value {
+        font-family: "Orbitron", sans-serif;
+        font-size: 32px;
+        font-weight: bold;
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+        position: relative;
+        z-index: 2;
+      }
+
+      html[dir="rtl"] .stage-value {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .stage-value.animated {
+        animation: pulseValue 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes pulseValue {
+        0% {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .stage-value-ring {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top: 3px solid #00bcd4;
+        animation: spin 3s linear infinite;
+        opacity: 0.7;
+      }
+
+      .stage-value-ring:nth-child(2) {
+        border: 3px solid transparent;
+        border-bottom: 3px solid #6a1b9a;
+        animation: spin 3s linear infinite reverse;
+      }
+
+      /* Stage Progress Container */
+      .stage-progress-container {
+        padding: 1.8rem;
+        position: relative;
+      }
+
+      .stage-progress-track {
+        position: relative;
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 2rem 0;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .stage-progress-bar {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        border-radius: 4px;
+        transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 0 15px rgba(0, 188, 212, 0.7);
+        z-index: 2;
+      }
+
+      html[dir="rtl"] .stage-progress-bar {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .stage-progress-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.1),
+          rgba(255, 255, 255, 0.3),
+          rgba(255, 255, 255, 0.1)
+        );
+        animation: progressFlow 3s linear infinite;
+        background-size: 200% 100%;
+      }
+
+      @keyframes progressFlow {
+        0% {
+          background-position: -200% 50%;
+        }
+        100% {
+          background-position: 200% 50%;
+        }
+      }
+
+      body[dir="ltr"] .stage-progress-bar {
+        left: 0;
+      }
+
+      body[dir="rtl"] .stage-progress-bar {
+        right: 0;
+      }
+
+      .stage-markers {
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .stage-marker {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+      }
+
+      .marker-point {
+        width: 18px;
+        height: 18px;
+        background: #121212;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transition: all 0.5s ease;
+        position: relative;
+      }
+
+      .marker-point::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.5s ease;
+      }
+
+      .marker-point.active {
+        border-color: #00bcd4;
+        background: #1a1a1a;
+        transform: scale(1.1);
+      }
+
+      .marker-point.active::before {
+        background: #00bcd4;
+      }
+
+      .marker-point.current {
+        transform: scale(1.3);
+        border-width: 3px;
+        animation: pulseMarker 2s infinite;
+      }
+
+      @keyframes pulseMarker {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        }
+      }
+
+      .marker-label {
+        margin-top: 10px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        transition: all 0.5s ease;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .marker-label.active {
+        color: #ffffff;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+      }
+
+      /* Stage Description */
+      .stage-description-container {
+        padding: 0 1.8rem 1.8rem;
+      }
+
+      .stage-description {
+        padding: 1.8rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        position: relative;
+        z-index: 1;
+        transition: all 0.5s ease;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border-left: 4px solid #00bcd4;
+        letter-spacing: 0.5px;
+      }
+
+      html[dir="rtl"] .stage-description {
+        border-left: none;
+        border-right: 4px solid #00bcd4;
+      }
+
+      .stage-description.animated {
+        animation: fadeSlideIn 0.8s ease-out forwards;
+      }
+
+      @keyframes fadeSlideIn {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stage-description::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 188, 212, 0.1) 0%,
+          transparent 100%
+        );
+        opacity: 0.2;
+        z-index: -1;
+        pointer-events: none;
+        border-radius: 12px;
+      }
+
+      /* Tumor Metrics Container */
+      .tumor-metrics-container {
+        background: rgba(30, 30, 30, 0.7);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.1);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        animation: revealIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) 1s forwards;
+        width: 100%;
+      }
+
+      .tumor-metrics-container:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        border-color: rgba(0, 188, 212, 0.4);
+      }
+
+      .tumor-metrics-header {
+        background: linear-gradient(
+          to right,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+        padding: 1.5rem;
+        color: #00bcd4;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      html[dir="rtl"] .tumor-metrics-header {
+        font-family: "Tajawal", sans-serif;
+        background: linear-gradient(
+          to left,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+      }
+
+      .tumor-metrics-header i {
+        margin-right: 12px;
+        color: #6a1b9a;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      html[dir="rtl"] .tumor-metrics-header i {
+        margin-right: 0;
+        margin-left: 12px;
+      }
+
+      .tumor-metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        padding: 1.8rem;
+      }
+
+      @media (max-width: 600px) {
+        .tumor-metrics-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .metric-card {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 1.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        border: 1px solid rgba(0, 188, 212, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .metric-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 188, 212, 0.05) 0%,
+          transparent 100%
+        );
+        opacity: 0.5;
+        z-index: 0;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        border-color: rgba(0, 188, 212, 0.3);
+      }
+
+      .metric-icon {
+        font-size: 0.4rem; /* or px/em depending on your design */
+        border-color: rgba(0, 188, 212, 0.3);
+      }
+
+      .metric-icon {
+        font-size: 28px;
+        color: #6a1b9a;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      .metric-label {
+        font-size: 16px;
+        color: #e0e0e0;
+        margin-bottom: 10px;
+        font-weight: 500;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .metric-value {
+        font-size: 30px;
+        font-weight: bold;
+        color: #ffffff;
+        font-family: "Orbitron", sans-serif;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+        position: relative;
+        z-index: 1;
+        letter-spacing: 1px;
+      }
+
+      html[dir="rtl"] .metric-value {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .metric-unit {
+        font-size: 14px;
+        color: #00bcd4;
+        margin-top: 5px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .metric-value.animated {
+        animation: pulseValue 0.5s ease-out;
+      }
+
+      /* Images Container */
+      .images-container {
+        display: flex;
+        gap: 2rem;
+        width: 100%;
+        margin-top: 2.5rem;
+      }
+
+      @media (max-width: 992px) {
+        .images-container {
+          flex-direction: column;
+        }
+      }
+
+      .image-container {
+        background: rgba(30, 30, 30, 0.7);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.1);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        animation: revealIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) 1.2s forwards;
+      }
+
+      .image-container:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        border-color: rgba(0, 188, 212, 0.4);
+      }
+
+      .image-label {
+        background: linear-gradient(
+          to right,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+        padding: 1.2rem;
+        color: #00bcd4;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      .image-label i {
+        margin-right: 12px;
+        color: #6a1b9a;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      html[dir="rtl"] .image-label i {
+        margin-right: 0;
+        margin-left: 12px;
+      }
+
+      html[dir="rtl"] .image-label {
+        font-family: "Tajawal", sans-serif;
+        background: linear-gradient(
+          to left,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+      }
+
+      .image-content {
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        min-height: 250px;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      .image-skeleton {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.05) 25%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0.05) 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 0;
+      }
+
+      @keyframes skeleton-loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .image-container img {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+          filter 0.5s ease;
+        opacity: 0;
+        animation: fadeIn 1s ease-out forwards;
+        border-radius: 0;
+        cursor: pointer;
+        filter: brightness(1.1) contrast(1.1);
+      }
+
+      .image-container img:hover {
+        transform: scale(1.05);
+        filter: brightness(1.2) contrast(1.2);
+      }
+
+      /* Action Buttons Container */
+      .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.4s forwards;
+      }
+
+      /* Upload Another Button */
+      .upload-another-btn {
+        padding: 1.25rem 2.5rem;
+        font-size: 1.5rem;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+          0 4px 15px rgba(0, 188, 212, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      html[dir="rtl"] .upload-another-btn {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .upload-another-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+
+      .upload-another-btn:hover::before {
+        left: 100%;
+      }
+
+      .upload-another-btn:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),
+          0 10px 25px rgba(0, 188, 212, 0.5), 0 5px 15px rgba(106, 27, 154, 0.4);
+      }
+
+      .upload-another-btn:active {
+        transform: translateY(-4px);
+      }
+
+      .upload-another-btn i {
+        font-size: 1.75rem;
+      }
+
+      /* Patient Status Button */
+      .patient-status-btn {
+        padding: 1.25rem 2.5rem;
+        font-size: 1.5rem;
+        background: transparent;
+        color: #00bcd4;
+        border: 2px solid #00bcd4;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      html[dir="rtl"] .patient-status-btn {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .patient-status-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 188, 212, 0.1),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+
+      .patient-status-btn:hover::before {
+        left: 100%;
+      }
+
+      .patient-status-btn:hover {
+        background-color: rgba(0, 188, 212, 0.1);
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 5px 15px rgba(0, 188, 212, 0.3);
+      }
+
+      .patient-status-btn:active {
+        transform: translateY(-4px);
+      }
+
+      .patient-status-btn i {
+        font-size: 1.75rem;
+      }
+
+      /* Status Message */
+      #status-message {
+        margin-top: 20px;
+        text-align: center;
+        color: #00bcd4;
+        font-weight: bold;
+        min-height: 24px;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.4s forwards;
+        position: relative;
+        padding: 15px;
+        border-radius: 10px;
+        transition: background-color 0.3s ease;
+        display: none;
+      }
+
+      #status-message.loading {
+        background-color: rgba(0, 188, 212, 0.1);
+        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      #status-message.error {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+        display: block;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(0, 188, 212, 0.3);
+        border-radius: 50%;
+        border-top-color: #00bcd4;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      /* Modal for image viewing */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
+      .modal-content {
+        max-width: 90%;
+        max-height: 90%;
+      }
+
+      .modal-image {
+        width: 100%;
+        height: auto;
+        max-height: 90vh;
+        object-fit: contain;
+        border: 2px solid #00bcd4;
+        border-radius: 5px;
+        box-shadow: 0 0 30px rgba(0, 188, 212, 0.3);
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+
+      .close-modal:hover {
+        color: #00bcd4;
+        transform: rotate(90deg);
+      }
+
+      /* Center Circle Loading Animation */
+      .center-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.9);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(5px);
+      }
+
+      .center-loader.active {
+        opacity: 1;
+        pointer-events: all;
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
+      .center-loader-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .center-circle {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        margin-bottom: 30px;
+      }
+
+      .center-circle-outer {
+        width: 100%;
+        height: 100%;
+        border: 6px solid rgba(0, 188, 212, 0.1);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+      }
+
+      .center-circle-middle {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
+        border: 6px solid rgba(106, 27, 154, 0.1);
+        border-top-color: #6a1b9a;
+        border-radius: 50%;
+        animation: spin 2s linear infinite reverse;
+      }
+
+      .center-circle-inner {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        width: calc(100% - 60px);
+        height: calc(100% - 60px);
+        border: 6px solid rgba(0, 188, 212, 0.2);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .center-loader-text {
+        color: #00bcd4;
+        font-size: 28px;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        margin-bottom: 15px;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      html[dir="rtl"] .center-loader-text {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .center-loader-subtext {
+        color: #e0e0e0;
+        font-size: 18px;
+        max-width: 80%;
+        margin: 0 auto 20px;
+      }
+
+      .center-progress {
+        width: 250px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .center-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #00bcd4, #6a1b9a);
+        border-radius: 3px;
+        transition: width 0.5s ease;
+      }
+
+      html[dir="rtl"] .center-progress-bar {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .center-percentage {
+        color: #e0e0e0;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      /* Footer Styling */
+      footer {
+        background: rgba(18, 18, 18, 0.9);
+        color: #e0e0e0;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 18px;
+        border-top: 3px solid #00bcd4;
+        backdrop-filter: blur(10px);
+        width: 100%;
+        margin-top: 2rem;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 10;
+        display: block;
+      }
+
+      footer p {
+        margin: 10px 0;
+      }
+
+      footer a {
+        color: #00bcd4;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+        position: relative;
+      }
+
+      footer a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -3px;
+        left: 0;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        transition: width 0.3s ease;
+      }
+
+      footer a:hover::after {
+        width: 100%;
+      }
+
+      footer a:hover {
+        color: #6a1b9a;
+        text-shadow: 0 0 5px rgba(106, 27, 154, 0.5);
+      }
+
+      /* Loading Animation */
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* AI Web Button */
+      .aiweb-btn-container {
+        display: flex;
+        justify-content: center;
+        margin: 3rem auto 2rem;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.5s forwards;
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 1.5rem;
+        opacity: 1 !important;
+        animation: none !important;
+      }
+
+      .aiweb-btn {
+        padding: 1.25rem 2.5rem;
+        font-size: 1.5rem;
+        background: linear-gradient(to right, #6a1b9a, #00bcd4);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+          0 4px 15px rgba(106, 27, 154, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      html[dir="rtl"] .aiweb-btn {
+        background: linear-gradient(to left, #6a1b9a, #00bcd4);
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .aiweb-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+
+      .aiweb-btn:hover::before {
+        left: 100%;
+      }
+
+      .aiweb-btn:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),
+          0 10px 25px rgba(106, 27, 154, 0.5), 0 5px 15px rgba(0, 188, 212, 0.4);
+      }
+
+      .aiweb-btn:active {
+        transform: translateY(-4px);
+      }
+
+      .aiweb-btn i {
+        font-size: 1.75rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .result-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        nav h1 {
+          font-size: 22px;
+        }
+
+        .nav-logout-btn {
+          padding: 6px 12px;
+          font-size: 14px;
+        }
+
+        .language-switcher {
+          padding: 3px;
+        }
+
+        .language-btn {
+          padding: 4px 8px;
+          font-size: 14px;
+        }
+
+        .action-buttons-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .upload-another-btn,
+        .patient-status-btn,
+        .aiweb-btn {
+          padding: 1rem 1.75rem;
+          font-size: 1.25rem;
+          width: 100%;
+          justify-content: center;
+        }
+        /* AI Web Button */
+        .aiweb-btn-container {
+          display: flex;
+          justify-content: center;
+          margin: 3rem auto 2rem;
+          opacity: 0;
+          animation: fadeIn 0.8s ease-out 1.5s forwards;
+          width: 100%;
+          max-width: 1200px;
+          padding: 0 1.5rem;
+        }
+
+        .aiweb-btn {
+          padding: 1.25rem 2.5rem;
+          font-size: 1.5rem;
+          background: linear-gradient(to right, #6a1b9a, #00bcd4);
+          color: white;
+          border: none;
+          border-radius: 50px;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+          font-family: "Rajdhani", sans-serif;
+          font-weight: 600;
+          letter-spacing: 1px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+            0 4px 15px rgba(106, 27, 154, 0.4);
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          position: relative;
+          overflow: hidden;
+        }
+
+        html[dir="rtl"] .aiweb-btn {
+          background: linear-gradient(to left, #6a1b9a, #00bcd4);
+          font-family: "Tajawal", sans-serif;
+        }
+
+        .aiweb-btn::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+          );
+          transition: left 0.7s ease;
+        }
+
+        .aiweb-btn:hover::before {
+          left: 100%;
+        }
+
+        .aiweb-btn:hover {
+          transform: translateY(-8px) scale(1.05);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),
+            0 10px 25px rgba(106, 27, 154, 0.5),
+            0 5px 15px rgba(0, 188, 212, 0.4);
+        }
+
+        .aiweb-btn:active {
+          transform: translateY(-4px);
+        }
+
+        .aiweb-btn i {
+          font-size: 1.75rem;
+        }
+        .result-card {
+          padding: 1.5rem;
+        }
+
+        .result-title {
+          font-size: 1.75rem;
+        }
+
+        .stage-header {
+          padding: 1rem;
+        }
+
+        .stage-title {
+          font-size: 1.1rem;
+        }
+
+        .stage-value-display {
+          width: 50px;
+          height: 50px;
+        }
+
+        .stage-value {
+          font-size: 24px;
+        }
+
+        .marker-point {
+          width: 14px;
+          height: 14px;
+        }
+
+        .marker-point::before {
+          width: 5px;
+          height: 5px;
+        }
+
+        .marker-label {
+          font-size: 12px;
+        }
+
+        .stage-description {
+          font-size: 0.9rem;
+          padding: 1rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .nav-left {
+          gap: 10px;
+        }
+
+        .result-title {
+          font-size: 1.5rem;
+        }
+
+        .upload-another-btn,
+        .patient-status-btn,
+        .aiweb-btn {
+          padding: 0.75rem 1.5rem;
+          font-size: 1.1rem;
+        }
+
+        .center-circle {
+          width: 120px;
+          height: 120px;
+        }
+
+        .center-progress {
+          width: 220px;
+        }
+
+        .tumor-metrics-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Image Modal -->
+    <div class="modal" id="image-modal">
+      <span class="close-modal" id="close-modal">&times;</span>
+      <div class="modal-content">
+        <img
+          id="modal-image"
+          class="modal-image"
+          src="/placeholder.svg"
+          alt="Enlarged Image"
+        />
+      </div>
+    </div>
+
+    <!-- Center Circle Loading Animation -->
+    <div class="center-loader" id="center-loader">
+      <div class="center-loader-content">
+        <div class="center-circle">
+          <div class="center-circle-outer"></div>
+          <div class="center-circle-middle"></div>
+          <div class="center-circle-inner"></div>
+        </div>
+        <div class="center-loader-text" id="center-loader-text">
+          Analyzing Your Image
+        </div>
+        <div class="center-loader-subtext" id="center-loader-subtext">
+          Our AI is examining your image for signs of liver cancer...
+        </div>
+        <div class="center-progress">
+          <div class="center-progress-bar" id="center-progress-bar"></div>
+        </div>
+        <div class="center-percentage" id="center-percentage">0%</div>
+      </div>
+    </div>
+
+    <!-- Navbar Section -->
+    <nav>
+      <div class="nav-left">
+        <button id="logout-btn" class="nav-logout-btn" onclick="handleLogout()">
+          <i class="fas fa-power-off"></i>
+          <span data-i18n="logout">Logout</span>
+        </button>
+        <div class="language-switcher">
+          <button
+            id="en-btn"
+            class="language-btn active"
+            onclick="changeLanguage('en')"
+          >
+            EN
+          </button>
+          <button
+            id="ar-btn"
+            class="language-btn"
+            onclick="changeLanguage('ar')"
+          >
+            AR
+          </button>
+        </div>
+      </div>
+      <div class="nav-right">
+        <h1 data-i18n="title">Liver Cancer Detection AI</h1>
+        <img src="./styleimages/logo.avif" alt="Logo" />
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <!-- Analysis Result Card -->
+      <div class="result-card">
+        <div class="result-header">
+          <h2 class="result-title" data-i18n="result-title">Analysis Result</h2>
+        </div>
+
+        <!-- Cancer Stage Visualization -->
+        <div class="stage-container" id="stage-container">
+          <div class="stage-header">
+            <div class="stage-title">
+              <i class="fas fa-chart-line"></i>
+              <span data-i18n="cancer-stage">Cancer Stage</span>
+            </div>
+            <div class="stage-value-display">
+              <div class="stage-value-ring"></div>
+              <div class="stage-value-ring"></div>
+              <div class="stage-value" id="stage-value">?</div>
+            </div>
+          </div>
+
+          <div class="stage-progress-container">
+            <div class="stage-markers">
+              <div class="stage-marker" data-stage="0">
+                <div class="marker-point" data-stage="0"></div>
+                <div class="marker-label" data-stage="0" data-i18n="stage-0">
+                  Stage 0
+                </div>
+              </div>
+              <div class="stage-marker" data-stage="1">
+                <div class="marker-point" data-stage="1"></div>
+                <div class="marker-label" data-stage="1" data-i18n="stage-1">
+                  Stage 1
+                </div>
+              </div>
+              <div class="stage-marker" data-stage="2">
+                <div class="marker-point" data-stage="2"></div>
+                <div class="marker-label" data-stage="2" data-i18n="stage-2">
+                  Stage 2
+                </div>
+              </div>
+              <div class="stage-marker" data-stage="3">
+                <div class="marker-point" data-stage="3"></div>
+                <div class="marker-label" data-stage="3" data-i18n="stage-3">
+                  Stage 3
+                </div>
+              </div>
+              <div class="stage-marker" data-stage="4">
+                <div class="marker-point" data-stage="4"></div>
+                <div class="marker-label" data-stage="4" data-i18n="stage-4">
+                  Stage 4
+                </div>
+              </div>
+            </div>
+
+            <div class="stage-progress-track">
+              <div class="stage-progress-bar" id="stage-progress-bar"></div>
+            </div>
+          </div>
+
+          <div class="stage-description-container">
+            <div
+              class="stage-description"
+              id="stage-description"
+              data-i18n="analyzing"
+            >
+              Analyzing your image...
+            </div>
+          </div>
+        </div>
+
+        <!-- Tumor Metrics Container -->
+        <div class="tumor-metrics-container" id="tumor-metrics-container">
+          <div class="tumor-metrics-header">
+            <i class="fas fa-ruler-combined"></i>
+            <span data-i18n="tumor-metrics">Tumor Metrics</span>
+          </div>
+          <div class="tumor-metrics-grid">
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-ruler-combined"></i>
+              </div>
+              <div class="metric-label" data-i18n="tumor-size">Tumor Size</div>
+              <div class="metric-value" id="tumor-size-value">--</div>
+              <div class="metric-unit" data-i18n="cm2">cm²</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-th"></i>
+              </div>
+              <div class="metric-label" data-i18n="tumor-area">Tumor Area</div>
+              <div class="metric-value" id="tumor-area-value">--</div>
+              <div class="metric-unit" data-i18n="pixels">pixels</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Images Container -->
+        <div class="images-container">
+          <div class="image-container">
+            <div class="image-label">
+              <i class="fas fa-image"></i>
+              <span data-i18n="original-image">Original Image</span>
+            </div>
+            <div class="image-content">
+              <div class="image-skeleton" id="original-skeleton"></div>
+              <img
+                id="original-image"
+                alt="Original Image"
+                style="display: none"
+                onclick="openImageModal(this.src)"
+              />
+            </div>
+          </div>
+
+          <div class="image-container">
+            <div class="image-label">
+              <i class="fas fa-layer-group"></i>
+              <span data-i18n="predicted-mask">Predicted Mask</span>
+            </div>
+            <div class="image-content">
+              <div class="image-skeleton" id="predicted-skeleton"></div>
+              <img
+                id="predicted-mask"
+                alt="Predicted Mask"
+                style="display: none"
+                onclick="openImageModal(this.src)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div id="status-message"></div>
+      </div>
+
+      <!-- Action Buttons Container -->
+      <div class="action-buttons-container">
+        <button onclick="goToUploadPage()" class="upload-another-btn">
+          <i class="fas fa-upload"></i>
+          <span data-i18n="upload-another">Upload Another Image</span>
+        </button>
+        <button onclick="goToPatientStatus()" class="patient-status-btn">
+          <i class="fas fa-user-md"></i>
+          <span data-i18n="patient-status">Patient Status</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- AI Web Button Container -->
+    <div class="aiweb-btn-container">
+      <button onclick="goToAIWeb()" class="aiweb-btn">
+        <i class="fas fa-robot"></i>
+        <span data-i18n="ai-web-button">Go to AI Web</span>
+      </button>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+      <p data-i18n="footer-text">
+        © 2024 Liver Cancer Detection AI. Our goal is to assist in the early
+        detection of liver cancer, providing a powerful tool for patients and
+        doctors alike.
+      </p>
+      <p>
+        <span data-i18n="contact-text">Contact us at:</span>
+        <a href="mailto:livercancerdetectionai@gmail.com"
+          >livercancerdetectionai@gmail.com</a
+        >
+      </p>
+    </footer>
+
+    <script>
+      let isProcessing = false;
+      let currentStage = null;
+
+      // Language translations
+      const translations = {
+        en: {
+          title: "Liver Cancer Detection AI",
+          logout: "Logout",
+          "result-title": "Analysis Result",
+          "cancer-stage": "Cancer Stage",
+          "original-image": "Original Image",
+          "predicted-mask": "Predicted Mask",
+          "upload-another": "Upload Another Image",
+          "patient-status": "Patient Status",
+          "footer-text":
+            "© 2024 Liver Cancer Detection AI. Our goal is to assist in the early detection of liver cancer, providing a powerful tool for patients and doctors alike.",
+          "contact-text": "Contact us at:",
+          analyzing: "Analyzing your image...",
+          "stage-0": "Stage 0",
+          "stage-1": "Stage 1",
+          "stage-2": "Stage 2",
+          "stage-3": "Stage 3",
+          "stage-4": "Stage 4",
+          "stage-description-0":
+            "No cancer detected. This is a healthy liver or very early stage with no visible signs of cancer.",
+          "stage-description-1":
+            "Early stage liver cancer. The tumor is small and has not spread to blood vessels, lymph nodes, or other parts of the body.",
+          "stage-description-2":
+            "Intermediate stage liver cancer. The tumor may be larger or there may be multiple tumors, but they have not spread to nearby blood vessels or other parts of the body.",
+          "stage-description-3":
+            "Advanced stage liver cancer. The cancer has invaded nearby blood vessels or there are multiple tumors, some of which may be larger than 5 cm.",
+          "stage-description-4":
+            "Late stage liver cancer. The cancer has spread to other parts of the body, such as the lungs or bones.",
+          "analyzing-image": "Analyzing Your Image",
+          "examining-image":
+            "Our AI is examining your image for signs of liver cancer...",
+          "processing-image": "Processing Image",
+          "preparing-image": "Preparing your image for AI analysis...",
+          "uploading-image": "Uploading Image",
+          "sending-image": "Sending your image to our secure servers...",
+          "generating-analysis": "Generating Analysis",
+          "creating-mask":
+            "Creating detailed mask of potential cancer regions...",
+          "finalizing-analysis": "Finalizing Analysis",
+          "preparing-results": "Almost there! Preparing your results...",
+          "analysis-complete": "Analysis Complete",
+          "results-ready": "Your results are ready!",
+          "retrieving-results": "Retrieving Results",
+          "fetching-results": "Fetching your previous analysis results...",
+          "waiting-results": "Waiting for Results",
+          "ai-working": "Our AI is working hard on your analysis...",
+          "returning-upload": "Returning to Upload",
+          "preparing-upload": "Preparing upload page...",
+          "logging-out": "Logging Out",
+          "ending-session": "Securely ending your session...",
+          "logout-complete": "Logout Complete",
+          "redirect-login": "Redirecting to login page...",
+          "no-image-data": "No image data found.",
+          "auth-missing": "Authentication information missing.",
+          "auth-not-found":
+            "No authentication information found. Please login again.",
+          "analysis-progress":
+            "Analysis in progress. Checking again in a few seconds...",
+          "no-results": "No Results",
+          "no-analysis-results":
+            "No analysis results were found for your account.",
+          "error-parsing": "Error parsing response: ",
+          "network-error": "A network error occurred. Please try again.",
+          "error-processing": "Error processing image: ",
+          // Tumor metrics
+          "tumor-metrics": "Tumor Metrics",
+          "tumor-size": "Tumor Size",
+          "tumor-area": "Tumor Area",
+          cm2: "cm²",
+          pixels: "pixels",
+          "no-tumor-detected": "No tumor detected",
+          "ai-web-button": "Go to AI Web",
+        },
+        ar: {
+          title: "الذكاء الاصطناعي للكشف عن سرطان الكبد",
+          logout: "تسجيل الخروج",
+          "result-title": "نتيجة التحليل",
+          "cancer-stage": "مرحلة السرطان",
+          "original-image": "الصورة الأصلية",
+          "predicted-mask": "القناع المتوقع",
+          "upload-another": "تحميل صورة أخرى",
+          "patient-status": "حالة المريض",
+          "footer-text":
+            "© 2024 الذكاء الاصطناعي للكشف عن سرطان الكبد. هدفنا هو المساعدة في الكشف المبكر عن سرطان الكبد، وتوفير أداة قوية للمرضى والأطباء على حد سواء.",
+          "contact-text": "تواصل معنا على:",
+          analyzing: "جاري تحليل صورتك...",
+          "stage-0": "المرحلة 0",
+          "stage-1": "المرحلة 1",
+          "stage-2": "المرحلة 2",
+          "stage-3": "المرحلة 3",
+          "stage-4": "المرحلة 4",
+          "stage-description-0":
+            "لم يتم اكتشاف سرطان. هذا كبد سليم أو مرحلة مبكرة جدًا بدون علامات مرئية للسرطان.",
+          "stage-description-1":
+            "سرطان الكبد في مرحلة مبكرة. الورم صغير ولم ينتشر إلى الأوعية الدموية أو العقد الليمفاوية أو أجزاء أخرى من الجسم.",
+          "stage-description-2":
+            "سرطان الكبد في المرحلة المتوسطة. قد يكون الورم أكبر أو قد تكون هناك أورام متعددة، لكنها لم تنتشر إلى الأوعية الدموية القريبة أو أجزاء أخرى من الجسم.",
+          "stage-description-3":
+            "سرطان الكبد في مرحلة متقدمة. غزا السرطان الأوعية الدموية القريبة أو هناك أورام متعددة، بعضها قد يكون أكبر من 5 سم.",
+          "stage-description-4":
+            "سرطان الكبد في المرحلة المتأخرة. انتشر السرطان إلى أجزاء أخرى من الجسم، مثل الرئتين أو العظام.",
+          "analyzing-image": "تحليل صورتك",
+          "examining-image":
+            "يقوم الذكاء الاصطناعي بفحص صورتك بحثًا عن علامات سرطان الكبد...",
+          "processing-image": "معالجة الصورة",
+          "preparing-image": "تحضير صورتك للتحليل بالذكاء الاصطناعي...",
+          "uploading-image": "تحميل الصورة",
+          "sending-image": "إرسال صورتك إلى خوادمنا الآمنة...",
+          "generating-analysis": "إنشاء التحليل",
+          "creating-mask": "إنشاء قناع مفصل لمناطق السرطان المحتملة...",
+          "finalizing-analysis": "الانتهاء من التحليل",
+          "preparing-results": "اقتربنا! تحضير النتائج الخاصة بك...",
+          "analysis-complete": "اكتمل التحليل",
+          "results-ready": "نتائجك جاهزة!",
+          "retrieving-results": "استرجاع النتائج",
+          "fetching-results": "جلب نتائج التحليل السابقة...",
+          "waiting-results": "انتظار النتائج",
+          "ai-working": "الذكاء الاصطناعي يعمل بجد على تحليلك...",
+          "returning-upload": "العودة إلى التحميل",
+          "preparing-upload": "تحضير صفحة التحميل...",
+          "logging-out": "تسجيل الخروج",
+          "ending-session": "إنهاء جلستك بشكل آمن...",
+          "logout-complete": "اكتمل تسجيل الخروج",
+          "redirect-login": "جاري التحويل إلى صفحة تسجيل الدخول...",
+          "no-image-data": "لم يتم العثور على بيانات الصورة.",
+          "auth-missing": "معلومات المصادقة مفقودة.",
+          "auth-not-found":
+            "لم يتم العثور على معلومات المصادقة. يرجى تسجيل الدخول مرة أخرى.",
+          "analysis-progress":
+            "التحليل قيد التقدم. التحقق مرة أخرى في بضع ثوان...",
+          "no-results": "لا توجد نتائج",
+          "no-analysis-results": "لم يتم العثور على نتائج تحليل لحسابك.",
+          "error-parsing": "خطأ في تحليل الاستجابة: ",
+          "network-error": "حدث خطأ في الشبكة. يرجى المحاولة مرة أخرى.",
+          "error-processing": "خطأ في معالجة الصورة: ",
+          // Tumor metrics
+          "tumor-metrics": "قياسات الورم",
+          "tumor-size": "حجم الورم",
+          "tumor-area": "مساحة الورم",
+          cm2: "سم²",
+          pixels: "بكسل",
+          "no-tumor-detected": "لم يتم اكتشاف ورم",
+          "ai-web-button": "الذهاب إلى صفحة الذكاء الاصطناعي",
+        },
+      };
+
+      // Current language
+      let currentLanguage = "en";
+
+      // Function to change language
+      function changeLanguage(lang) {
+        currentLanguage = lang;
+
+        // Update active button state
+        document
+          .getElementById("en-btn")
+          .classList.toggle("active", lang === "en");
+        document
+          .getElementById("ar-btn")
+          .classList.toggle("active", lang === "ar");
+
+        // Update page direction
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+
+        // Update all text elements with translations
+        const elements = document.querySelectorAll("[data-i18n]");
+        elements.forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          if (translations[lang][key]) {
+            element.textContent = translations[lang][key];
+          }
+        });
+
+        // Update stage description if we have a current stage
+        if (currentStage !== null) {
+          const descriptionKey = `stage-description-${currentStage}`;
+          document.getElementById("stage-description").textContent =
+            translations[lang][descriptionKey];
+
+          // Re-apply stage visualization to update RTL/LTR specific elements
+          updateStageVisualization(currentStage, true);
+        }
+
+        // Save language preference
+        localStorage.setItem("preferredLanguage", lang);
+      }
+
+      // Function to open image modal
+      function openImageModal(imageSrc) {
+        const modal = document.getElementById("image-modal");
+        const modalImage = document.getElementById("modal-image");
+
+        modalImage.src = imageSrc;
+        modal.classList.add("active");
+      }
+
+      // Function to close image modal
+      function closeImageModal() {
+        const modal = document.getElementById("image-modal");
+        modal.classList.remove("active");
+      }
+
+      function updateCenterLoaderProgress(percent, messageKey, submessageKey) {
+        const progressBar = document.getElementById("center-progress-bar");
+        const percentageText = document.getElementById("center-percentage");
+
+        progressBar.style.width = `${percent}%`;
+        percentageText.textContent = `${percent}%`;
+
+        if (messageKey) {
+          document.getElementById("center-loader-text").textContent =
+            translations[currentLanguage][messageKey];
+        }
+        if (submessageKey) {
+          document.getElementById("center-loader-subtext").textContent =
+            translations[currentLanguage][submessageKey];
+        }
+      }
+
+      window.onload = function () {
+        console.log("Analysis Result page loaded");
+        sessionStorage.removeItem("redirecting");
+
+        // Set up modal close button
+        document
+          .getElementById("close-modal")
+          .addEventListener("click", closeImageModal);
+
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(
+          25,
+          "retrieving-results",
+          "fetching-results"
+        );
+
+        // Load saved language preference
+        const savedLanguage = localStorage.getItem("preferredLanguage");
+        if (savedLanguage) {
+          changeLanguage(savedLanguage);
+        }
+
+        // Directly fetch existing results
+        fetchExistingResults();
+      };
+
+      function fetchExistingResults(isFreshAnalysis = false) {
+        if (isProcessing && !isFreshAnalysis) {
+          console.log("Already processing, skipping duplicate fetch");
+          return;
+        }
+
+        isProcessing = true;
+
+        const token = localStorage.getItem("authToken");
+        const patientId = localStorage.getItem("patientId");
+
+        if (!token || !patientId) {
+          document.getElementById("status-message").textContent =
+            translations[currentLanguage]["auth-not-found"];
+          document.getElementById("status-message").className = "error";
+          document.getElementById("center-loader").classList.remove("active");
+          alert(translations[currentLanguage]["auth-not-found"]);
+          window.location.href = "login.html";
+          return;
+        }
+
+        if (isFreshAnalysis) {
+          updateCenterLoaderProgress(
+            85,
+            "finalizing-analysis",
+            "preparing-results"
+          );
+        } else {
+          document.getElementById("center-loader").classList.add("active");
+          updateCenterLoaderProgress(
+            50,
+            "retrieving-results",
+            "fetching-results"
+          );
+        }
+
+        const timestamp = new Date().getTime();
+        const xhr = new XMLHttpRequest();
+
+        xhr.onload = function () {
+          console.log("XHR status:", xhr.status);
+          console.log("Raw API Response:", xhr.responseText);
+
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              console.log("Parsed Response Data:", data);
+
+              if (data.aiResponse) {
+                updateCenterLoaderProgress(
+                  100,
+                  "analysis-complete",
+                  "results-ready"
+                );
+                setTimeout(() => {
+                  document
+                    .getElementById("center-loader")
+                    .classList.remove("active");
+                  displayResults(data.aiResponse);
+                }, 1000);
+                isProcessing = false;
+              } else {
+                if (isFreshAnalysis) {
+                  document.getElementById("status-message").textContent =
+                    translations[currentLanguage]["analysis-progress"];
+                  document.getElementById("status-message").className =
+                    "loading";
+                  document.getElementById("status-message").innerHTML =
+                    '<div class="loading-spinner"></div>' +
+                    translations[currentLanguage]["analysis-progress"];
+                  updateCenterLoaderProgress(
+                    90,
+                    "waiting-results",
+                    "ai-working"
+                  );
+
+                  // Poll for results every 5 seconds
+                  setTimeout(() => fetchExistingResults(true), 5000);
+                } else {
+                  document.getElementById("stage-value").textContent =
+                    translations[currentLanguage]["no-results"];
+                  document.getElementById("status-message").textContent =
+                    translations[currentLanguage]["no-analysis-results"];
+                  document.getElementById("status-message").className = "error";
+                  document
+                    .getElementById("center-loader")
+                    .classList.remove("active");
+                  isProcessing = false;
+                }
+              }
+            } catch (error) {
+              console.error("Error parsing response:", error);
+              document.getElementById("status-message").textContent =
+                translations[currentLanguage]["error-parsing"] + error.message;
+              document.getElementById("status-message").className = "error";
+              document
+                .getElementById("center-loader")
+                .classList.remove("active");
+              isProcessing = false;
+            }
+          } else {
+            console.error(
+              "Failed to fetch results:",
+              xhr.status,
+              xhr.statusText
+            );
+            document.getElementById("stage-value").textContent =
+              translations[currentLanguage]["no-results"];
+            document.getElementById("status-message").textContent =
+              "Error: " + xhr.statusText;
+            document.getElementById("status-message").className = "error";
+            document.getElementById("center-loader").classList.remove("active");
+            isProcessing = false;
+          }
+        };
+
+        xhr.onerror = function () {
+          console.error("Network error occurred");
+          document.getElementById("stage-value").textContent =
+            translations[currentLanguage]["no-results"];
+          document.getElementById("status-message").textContent =
+            translations[currentLanguage]["network-error"];
+          document.getElementById("status-message").className = "error";
+          document.getElementById("center-loader").classList.remove("active");
+          isProcessing = false;
+        };
+
+        xhr.open(
+          "GET",
+          `${BACKEND_NGROK.API}/api/patient/uploadimage/${patientId}/ai-response?t=${timestamp}`,
+          true
+        );
+        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhr.send();
+      }
+
+      function displayResults(aiResponse) {
+        try {
+          console.log("Full AI Response in displayResults:", aiResponse);
+
+          const originalSkeleton = document.getElementById("original-skeleton");
+          const predictedSkeleton =
+            document.getElementById("predicted-skeleton");
+          const originalImage = document.getElementById("original-image");
+          const predictedImage = document.getElementById("predicted-mask");
+
+          originalImage.src = `data:image/png;base64,${aiResponse.originalImage}`;
+          predictedImage.src = `data:image/png;base64,${aiResponse.predictedMask}`;
+
+          originalImage.onload = function () {
+            originalSkeleton.style.display = "none";
+            originalImage.style.display = "block";
+            originalImage.style.opacity = "0";
+            originalImage.style.objectFit = "contain";
+            setTimeout(() => {
+              originalImage.style.opacity = "1";
+            }, 100);
+          };
+
+          predictedImage.onload = function () {
+            predictedSkeleton.style.display = "none";
+            predictedImage.style.display = "block";
+            predictedImage.style.opacity = "0";
+            predictedImage.style.objectFit = "cover";
+            setTimeout(() => {
+              predictedImage.style.opacity = "1";
+            }, 300);
+          };
+
+          const stageNumber = extractStageNumber(aiResponse.cancerStage);
+          updateStageVisualization(stageNumber);
+
+          // Enhanced tumor metrics handling
+          const tumorSizeValue = document.getElementById("tumor-size-value");
+          const tumorAreaValue = document.getElementById("tumor-area-value");
+
+          // Get values with fallbacks
+          const tumorSize =
+            aiResponse.tumorSizeCm2 !== undefined
+              ? aiResponse.tumorSizeCm2
+              : aiResponse.tumor_size_cm2 !== undefined
+              ? aiResponse.tumor_size_cm2
+              : null;
+
+          const tumorArea =
+            aiResponse.tumorAreaPixels !== undefined
+              ? aiResponse.tumorAreaPixels
+              : aiResponse.tumor_area_pixels !== undefined
+              ? aiResponse.tumor_area_pixels
+              : null;
+
+          // Display values
+          if (tumorSize !== null && tumorSize !== undefined) {
+            tumorSizeValue.textContent =
+              typeof tumorSize === "number"
+                ? tumorSize.toFixed(2)
+                : tumorSize.toString();
+          } else {
+            tumorSizeValue.textContent =
+              translations[currentLanguage]["no-tumor-detected"];
+          }
+
+          if (tumorArea !== null && tumorArea !== undefined) {
+            tumorAreaValue.textContent =
+              typeof tumorArea === "number"
+                ? tumorArea.toLocaleString()
+                : tumorArea.toString();
+          } else {
+            tumorAreaValue.textContent =
+              translations[currentLanguage]["no-tumor-detected"];
+          }
+
+          // Add animation
+          tumorSizeValue.classList.remove("animated");
+          tumorAreaValue.classList.remove("animated");
+          void tumorSizeValue.offsetWidth; // Force reflow
+          void tumorAreaValue.offsetWidth; // Force reflow
+          tumorSizeValue.classList.add("animated");
+          tumorAreaValue.classList.add("animated");
+
+          document.getElementById("status-message").style.display = "none";
+        } catch (error) {
+          console.error("Error displaying results:", error);
+          console.error("Error stack:", error.stack);
+          document.getElementById("stage-value").textContent =
+            translations[currentLanguage]["no-results"];
+          document.getElementById("status-message").textContent =
+            "Error: " + error.message;
+          document.getElementById("status-message").className = "error";
+          document.getElementById("status-message").style.display = "block";
+        }
+      }
+
+      function updateStageVisualization(stageNumber, isLanguageChange = false) {
+        // Store current stage for language switching
+        currentStage = stageNumber;
+
+        const progressBar = document.getElementById("stage-progress-bar");
+        const stageValueDisplay = document.getElementById("stage-value");
+        const stageDescription = document.getElementById("stage-description");
+
+        // Reset all markers
+        document.querySelectorAll(".stage-marker").forEach((marker) => {
+          marker.querySelector(".marker-point").classList.remove("active");
+          marker.querySelector(".marker-point").classList.remove("current");
+          marker.querySelector(".marker-label").classList.remove("active");
+        });
+
+        if (stageNumber === null || stageNumber === undefined) {
+          stageValueDisplay.textContent = "?";
+          stageDescription.textContent =
+            translations[currentLanguage]["analyzing"];
+          progressBar.style.width = "0%";
+          return;
+        }
+
+        // Set active and current markers
+        const currentMarker = document.querySelector(
+          `.stage-marker[data-stage="${stageNumber}"]`
+        );
+        if (currentMarker) {
+          currentMarker.querySelector(".marker-point").classList.add("active");
+          currentMarker.querySelector(".marker-point").classList.add("current");
+          currentMarker.querySelector(".marker-label").classList.add("active");
+        }
+
+        // Set previous markers as active
+        for (let i = 0; i < stageNumber; i++) {
+          const marker = document.querySelector(
+            `.stage-marker[data-stage="${i}"]`
+          );
+          if (marker) {
+            marker.querySelector(".marker-point").classList.add("active");
+            marker.querySelector(".marker-label").classList.add("active");
+          }
+        }
+
+        // Update stage value
+        stageValueDisplay.textContent = stageNumber;
+        stageValueDisplay.classList.remove("animated");
+        void stageValueDisplay.offsetWidth; // Trigger reflow to restart animation
+        stageValueDisplay.classList.add("animated");
+
+        // Update progress bar
+        const progressPercentage = (stageNumber / 4) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+
+        // Update stage description
+        const descriptionKey = `stage-description-${stageNumber}`;
+        stageDescription.textContent =
+          translations[currentLanguage][descriptionKey];
+        stageDescription.classList.remove("animated");
+        void stageDescription.offsetWidth; // Trigger reflow
+        stageDescription.classList.add("animated");
+      }
+
+      function extractStageNumber(cancerStage) {
+        if (cancerStage === null || cancerStage === undefined) {
+          return null;
+        }
+
+        const stageText = cancerStage.toLowerCase();
+
+        if (stageText.includes("0") || stageText.includes("zero")) {
+          return 0;
+        } else if (stageText.includes("1") || stageText.includes("one")) {
+          return 1;
+        } else if (stageText.includes("2") || stageText.includes("two")) {
+          return 2;
+        } else if (stageText.includes("3") || stageText.includes("three")) {
+          return 3;
+        } else if (stageText.includes("4") || stageText.includes("four")) {
+          return 4;
+        } else {
+          return null;
+        }
+      }
+
+      function goToUploadPage() {
+        if (sessionStorage.getItem("redirecting") === "true") {
+          return;
+        }
+
+        sessionStorage.setItem("redirecting", "true");
+
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(50, "returning-upload", "preparing-upload");
+
+        const timestamp = new Date().getTime();
+        console.log("Navigating to upload page at:", new Date().toISOString());
+
+        setTimeout(() => {
+          window.location.href = `aiweb.html?t=${timestamp}`;
+        }, 1000);
+      }
+
+      function goToPatientStatus() {
+        if (sessionStorage.getItem("redirecting") === "true") {
+          return;
+        }
+
+        sessionStorage.setItem("redirecting", "true");
+
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(50, "returning-upload", "preparing-upload");
+
+        const timestamp = new Date().getTime();
+        console.log(
+          "Navigating to patient status page at:",
+          new Date().toISOString()
+        );
+
+        setTimeout(() => {
+          window.location.href = `patient-status.html?t=${timestamp}`;
+        }, 1000);
+      }
+
+      // Function to handle logout
+      function handleLogout() {
+        if (sessionStorage.getItem("redirecting") === "true") {
+          return;
+        }
+
+        sessionStorage.setItem("redirecting", "true");
+
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(75, "logging-out", "ending-session");
+
+        // Clear local storage
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("patientId");
+        localStorage.removeItem("preferredLanguage");
+
+        setTimeout(() => {
+          updateCenterLoaderProgress(100, "logout-complete", "redirect-login");
+          window.location.href = "login.html";
+        }, 1500);
+      }
+
+      // Function to navigate to AI Web page
+      function goToAIWeb() {
+        if (sessionStorage.getItem("redirecting") === "true") {
+          return;
+        }
+
+        sessionStorage.setItem("redirecting", "true");
+
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(50, "returning-upload", "preparing-upload");
+
+        const timestamp = new Date().getTime();
+        console.log("Navigating to AI Web page at:", new Date().toISOString());
+
+        setTimeout(() => {
+          window.location.href = `aiweb.html?t=${timestamp}`;
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>

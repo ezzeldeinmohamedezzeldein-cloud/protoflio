@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Status - Liver Cancer Detection AI</title>
+    <link rel="icon" href="./styleimages/logo.avif" type="image/x-icon" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="app-config.js"></script>
+
+    <style>
+      /* Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: #0a0a0a;
+        color: #e0e0e0;
+        font-family: "Rajdhani", sans-serif;
+        opacity: 0;
+        animation: fadeInBlur 1.2s ease-out forwards;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 20%,
+            rgba(106, 27, 154, 0.05) 0%,
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            rgba(0, 188, 212, 0.05) 0%,
+            transparent 30%
+          );
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      /* RTL Support */
+      html[dir="rtl"] body {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      /* Page load animation */
+      @keyframes fadeInBlur {
+        0% {
+          opacity: 0;
+          filter: blur(10px);
+        }
+        100% {
+          opacity: 1;
+          filter: blur(0);
+        }
+      }
+
+      /* Navbar Styling */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(18, 18, 18, 0.9);
+        padding: 15px 30px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+          0 0 40px rgba(0, 188, 212, 0.1);
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: slideInDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s
+          forwards;
+      }
+
+      @keyframes slideInDown {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      html[dir="rtl"] .nav-left {
+        flex-direction: row-reverse;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+      }
+
+      html[dir="rtl"] .nav-right {
+        flex-direction: row-reverse;
+      }
+
+      nav img {
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+        transition: transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+          filter 0.5s ease;
+        margin-left: 15px;
+        filter: drop-shadow(0 0 8px rgba(0, 188, 212, 0.5));
+      }
+
+      html[dir="rtl"] nav img {
+        margin-left: 0;
+        margin-right: 15px;
+      }
+
+      nav img:hover {
+        transform: rotate(360deg) scale(1.1);
+        filter: drop-shadow(0 0 12px rgba(0, 188, 212, 0.8));
+      }
+
+      nav h1 {
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        font-size: 26px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        letter-spacing: 1px;
+      }
+
+      html[dir="rtl"] nav h1 {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      nav h1:hover {
+        color: #6a1b9a;
+        text-shadow: 0 0 15px rgba(106, 27, 154, 0.5);
+        letter-spacing: 2px;
+      }
+
+      /* Language Switcher */
+      .language-switcher {
+        display: flex;
+        align-items: center;
+        background-color: rgba(0, 188, 212, 0.1);
+        border-radius: 50px;
+        padding: 3px;
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .language-switcher::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to bottom right,
+          transparent,
+          rgba(0, 188, 212, 0.1),
+          transparent
+        );
+        transform: rotate(45deg);
+        animation: shimmerEffect 3s infinite linear;
+        pointer-events: none;
+      }
+
+      @keyframes shimmerEffect {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      .language-switcher:hover {
+        background-color: rgba(0, 188, 212, 0.2);
+        box-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+      }
+
+      .language-btn {
+        background: transparent;
+        border: none;
+        color: #e0e0e0;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+      }
+
+      .language-btn.active {
+        background-color: #00bcd4;
+        color: #121212;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .language-btn:hover:not(.active) {
+        color: #00bcd4;
+        text-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+      }
+
+      /* Navbar Logout Button Styling */
+      .nav-logout-btn {
+        padding: 8px 16px;
+        font-size: 15px;
+        background-color: transparent;
+        color: #00bcd4;
+        border: 2px solid #00bcd4;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-logout-btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+
+      .nav-logout-btn:hover::after {
+        left: 100%;
+      }
+
+      .nav-logout-btn i {
+        transition: transform 0.5s ease;
+      }
+
+      html[dir="rtl"] .nav-logout-btn i {
+        margin-left: 8px;
+        margin-right: 0;
+      }
+
+      .nav-logout-btn:hover {
+        background-color: #00bcd4;
+        color: #121212;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
+      }
+
+      .nav-logout-btn:hover i {
+        transform: rotate(360deg);
+      }
+
+      /* Main Container */
+      .main-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        flex: 1;
+      }
+
+      /* Patient Status Card */
+      .status-card {
+        background: rgba(25, 25, 25, 0.7);
+        padding: 2.5rem;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.1);
+        margin-bottom: 2.5rem;
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        opacity: 0;
+        transform: translateY(40px);
+        animation: floatUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      @keyframes floatUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .status-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at top right,
+          rgba(106, 27, 154, 0.15),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .status-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at bottom left,
+          rgba(0, 188, 212, 0.15),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .status-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5),
+          0 0 30px rgba(0, 188, 212, 0.2);
+      }
+
+      .status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        position: relative;
+      }
+
+      .status-header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 120px;
+        height: 3px;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        border-radius: 3px;
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      html[dir="rtl"] .status-header::after {
+        left: auto;
+        right: 0;
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .status-title {
+        color: #00bcd4;
+        font-size: 2.2rem;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        text-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+        position: relative;
+      }
+
+      .status-title::before {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 2px;
+        background: #6a1b9a;
+        bottom: -10px;
+        left: 0;
+      }
+
+      html[dir="rtl"] .status-title {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      html[dir="rtl"] .status-title::before {
+        left: auto;
+        right: 0;
+      }
+
+      /* Patient Info Section */
+      .patient-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+        opacity: 0;
+        animation: revealIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.8s forwards;
+      }
+
+      @keyframes revealIn {
+        0% {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .info-card {
+        background: rgba(30, 30, 30, 0.7);
+        border-radius: 16px;
+        padding: 1.8rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.1);
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .info-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        border-color: rgba(0, 188, 212, 0.4);
+      }
+
+      .info-title {
+        color: #00bcd4;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        font-family: "Orbitron", sans-serif;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        padding-bottom: 0.8rem;
+      }
+
+      html[dir="rtl"] .info-title {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .info-title i {
+        margin-right: 12px;
+        font-size: 1.3rem;
+        color: #6a1b9a;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      html[dir="rtl"] .info-title i {
+        margin-right: 0;
+        margin-left: 12px;
+      }
+
+      .info-content {
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+
+      .info-item {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .info-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-label {
+        font-weight: bold;
+        color: #aaa;
+        min-width: 120px;
+      }
+
+      .info-value {
+        color: #fff;
+        font-weight: 500;
+      }
+
+      /* Latest Analysis Section */
+      .analysis-section {
+        margin-bottom: 2.5rem;
+        opacity: 0;
+        animation: revealIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) 1s forwards;
+        width: 100%;
+      }
+
+      .section-title {
+        color: #00bcd4;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        font-family: "Orbitron", sans-serif;
+        display: flex;
+        align-items: center;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      html[dir="rtl"] .section-title {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .section-title i {
+        margin-right: 12px;
+        font-size: 1.3rem;
+        color: #6a1b9a;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      html[dir="rtl"] .section-title i {
+        margin-right: 0;
+        margin-left: 12px;
+      }
+
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        width: 100%;
+      }
+
+      .analysis-card {
+        background: rgba(30, 30, 30, 0.7);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.1);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .analysis-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        border-color: rgba(0, 188, 212, 0.4);
+      }
+
+      .analysis-header {
+        background: linear-gradient(
+          to right,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+      }
+
+      html[dir="rtl"] .analysis-header {
+        background: linear-gradient(
+          to left,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+      }
+
+      .analysis-title {
+        color: #00bcd4;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      html[dir="rtl"] .analysis-title {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .analysis-date {
+        color: #aaa;
+        font-size: 0.95rem;
+      }
+
+      .analysis-content {
+        padding: 1.8rem;
+        flex: 1;
+      }
+
+      .analysis-item {
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .analysis-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .analysis-label {
+        font-weight: bold;
+        color: #aaa;
+        min-width: 150px;
+      }
+
+      .analysis-value {
+        color: #fff;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+      }
+
+      .analysis-value.stage {
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      html[dir="rtl"] .analysis-value.stage {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .stage-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 10px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+      }
+
+      html[dir="rtl"] .stage-indicator {
+        margin-right: 0;
+        margin-left: 10px;
+      }
+
+      .stage-0 {
+        background-color: #4caf50;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+      }
+
+      .stage-1 {
+        background-color: #8bc34a;
+        box-shadow: 0 0 8px rgba(139, 195, 74, 0.5);
+      }
+
+      .stage-2 {
+        background-color: #ffc107;
+        box-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
+      }
+
+      .stage-3 {
+        background-color: #ff9800;
+        box-shadow: 0 0 8px rgba(255, 152, 0, 0.5);
+      }
+
+      .stage-4 {
+        background-color: #f44336;
+        box-shadow: 0 0 8px rgba(244, 67, 54, 0.5);
+      }
+
+      /* Tumor Metrics */
+      .tumor-metrics {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .tumor-metrics {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+
+      .tumor-metric-item {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        display: flex;
+        align-items: center;
+        border: 1px solid rgba(0, 188, 212, 0.1);
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tumor-metric-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 188, 212, 0.05) 0%,
+          transparent 100%
+        );
+        opacity: 0.5;
+        z-index: 0;
+      }
+
+      .tumor-metric-item:hover {
+        background: rgba(0, 0, 0, 0.4);
+        border-color: rgba(0, 188, 212, 0.3);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .tumor-metric-icon {
+        color: #6a1b9a;
+        font-size: 1.5rem;
+        margin-right: 15px;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      html[dir="rtl"] .tumor-metric-icon {
+        margin-right: 0;
+        margin-left: 15px;
+      }
+
+      .tumor-metric-label {
+        color: #aaa;
+        font-weight: bold;
+        margin-right: 10px;
+        position: relative;
+        z-index: 1;
+      }
+
+      html[dir="rtl"] .tumor-metric-label {
+        margin-right: 0;
+        margin-left: 10px;
+      }
+
+      .tumor-metric-value {
+        color: #fff;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.2rem;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      html[dir="rtl"] .tumor-metric-value {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .tumor-metric-unit {
+        color: #00bcd4;
+        font-size: 0.9rem;
+        margin-left: 4px;
+        position: relative;
+        z-index: 1;
+      }
+
+      html[dir="rtl"] .tumor-metric-unit {
+        margin-left: 0;
+        margin-right: 4px;
+      }
+
+      /* Images Section */
+      .images-section {
+        margin-bottom: 2.5rem;
+        opacity: 0;
+        animation: revealIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) 1.2s forwards;
+      }
+
+      .images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .image-card {
+        background: rgba(30, 30, 30, 0.7);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(0, 188, 212, 0.1);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        display: flex;
+        flex-direction: column;
+        min-height: 200px; /* Minimum height to ensure visibility */
+      }
+
+      .image-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(0, 188, 212, 0.3);
+        border-color: rgba(0, 188, 212, 0.4);
+      }
+
+      .image-header {
+        background: linear-gradient(
+          to right,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+        padding: 1.2rem;
+        color: #00bcd4;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+      }
+
+      html[dir="rtl"] .image-header {
+        font-family: "Tajawal", sans-serif;
+        background: linear-gradient(
+          to left,
+          rgba(0, 188, 212, 0.2),
+          rgba(106, 27, 154, 0.2)
+        );
+      }
+
+      .image-header i {
+        margin-right: 12px;
+        color: #6a1b9a;
+        filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.5));
+      }
+
+      html[dir="rtl"] .image-header i {
+        margin-right: 0;
+        margin-left: 12px;
+      }
+
+      .image-content {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        position: relative;
+        background: rgba(0, 0, 0, 0.2);
+        width: 100%;
+      }
+
+      .image-content img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Ensure the entire image is visible */
+        transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+          filter 0.5s ease;
+        cursor: pointer;
+        filter: brightness(1.1) contrast(1.1);
+      }
+      .image-content img:hover {
+        transform: scale(1.05);
+        filter: brightness(1.2) contrast(1.2);
+      }
+
+      .no-data {
+        text-align: center;
+        padding: 2rem;
+        color: #aaa;
+        font-style: italic;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        border: 1px dashed rgba(0, 188, 212, 0.2);
+      }
+
+      /* Loading Animation */
+      .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0, 188, 212, 0.3);
+        border-radius: 50%;
+        border-top-color: #00bcd4;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 2rem;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.4s forwards;
+      }
+
+      .action-btn {
+        padding: 1.25rem 2.5rem;
+        font-size: 1.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 1px;
+      }
+
+      .action-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+
+      .action-btn:hover::before {
+        left: 100%;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-8px) scale(1.05);
+      }
+
+      .action-btn i {
+        font-size: 1.75rem;
+      }
+
+      .primary-btn {
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        color: white;
+        border: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+          0 4px 15px rgba(0, 188, 212, 0.4);
+      }
+
+      html[dir="rtl"] .primary-btn {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .primary-btn:hover {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),
+          0 10px 25px rgba(0, 188, 212, 0.5), 0 5px 15px rgba(106, 27, 154, 0.4);
+      }
+
+      .secondary-btn {
+        background: transparent;
+        color: #00bcd4;
+        border: 2px solid #00bcd4;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .secondary-btn:hover {
+        background-color: rgba(0, 188, 212, 0.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3),
+          0 4px 15px rgba(0, 188, 212, 0.3);
+      }
+
+      /* Modal for image viewing */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
+      .modal-content {
+        max-width: 90%;
+        max-height: 90%;
+      }
+
+      .modal-image {
+        width: 100%;
+        height: auto;
+        max-height: 90vh;
+        object-fit: contain;
+        border: 2px solid #00bcd4;
+        border-radius: 5px;
+        box-shadow: 0 0 30px rgba(0, 188, 212, 0.3);
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+
+      .close-modal:hover {
+        color: #00bcd4;
+        transform: rotate(90deg);
+      }
+
+      /* Center Circle Loading Animation */
+      .center-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.9);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(5px);
+      }
+
+      .center-loader.active {
+        opacity: 1;
+        pointer-events: all;
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
+      .center-loader-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .center-circle {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        margin-bottom: 30px;
+      }
+
+      .center-circle-outer {
+        width: 100%;
+        height: 100%;
+        border: 6px solid rgba(0, 188, 212, 0.1);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+      }
+
+      .center-circle-middle {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
+        border: 6px solid rgba(106, 27, 154, 0.1);
+        border-top-color: #6a1b9a;
+        border-radius: 50%;
+        animation: spin 2s linear infinite reverse;
+      }
+
+      .center-circle-inner {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        width: calc(100% - 60px);
+        height: calc(100% - 60px);
+        border: 6px solid rgba(0, 188, 212, 0.2);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .center-loader-text {
+        color: #00bcd4;
+        font-size: 28px;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        margin-bottom: 15px;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      }
+
+      html[dir="rtl"] .center-loader-text {
+        font-family: "Tajawal", sans-serif;
+      }
+
+      .center-loader-subtext {
+        color: #e0e0e0;
+        font-size: 18px;
+        max-width: 80%;
+        margin: 0 auto 20px;
+      }
+
+      .center-progress {
+        width: 250px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .center-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #00bcd4, #6a1b9a);
+        border-radius: 3px;
+        transition: width 0.5s ease;
+      }
+
+      html[dir="rtl"] .center-progress-bar {
+        background: linear-gradient(to left, #00bcd4, #6a1b9a);
+      }
+
+      .center-percentage {
+        color: #e0e0e0;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      /* Footer Styling */
+      footer {
+        background: rgba(18, 18, 18, 0.9);
+        color: #e0e0e0;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 18px;
+        border-top: 3px solid #00bcd4;
+        backdrop-filter: blur(10px);
+        width: 100%;
+        margin-top: auto;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.6s forwards;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      footer p {
+        margin: 10px 0;
+      }
+
+      footer a {
+        color: #00bcd4;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+        position: relative;
+      }
+
+      footer a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -3px;
+        left: 0;
+        background: linear-gradient(to right, #00bcd4, #6a1b9a);
+        transition: width 0.3s ease;
+      }
+
+      footer a:hover::after {
+        width: 100%;
+      }
+
+      footer a:hover {
+        color: #6a1b9a;
+        text-shadow: 0 0 5px rgba(106, 27, 154, 0.5);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .status-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        nav h1 {
+          font-size: 22px;
+        }
+
+        .nav-logout-btn {
+          padding: 6px 12px;
+          font-size: 14px;
+        }
+
+        .language-switcher {
+          padding: 3px;
+        }
+
+        .language-btn {
+          padding: 4px 8px;
+          font-size: 14px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .action-btn {
+          width: 100%;
+          max-width: 300px;
+          justify-content: center;
+          padding: 1rem 1.75rem;
+          font-size: 1.25rem;
+        }
+
+        .status-card {
+          padding: 1.5rem;
+        }
+
+        .status-title {
+          font-size: 1.75rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .nav-left {
+          gap: 10px;
+        }
+
+        .status-title {
+          font-size: 1.5rem;
+        }
+
+        .info-item {
+          flex-direction: column;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+        }
+
+        .info-label {
+          margin-bottom: 0.25rem;
+        }
+
+        .action-btn {
+          padding: 0.75rem 1.5rem;
+          font-size: 1.1rem;
+        }
+
+        .center-circle {
+          width: 120px;
+          height: 120px;
+        }
+
+        .center-progress {
+          width: 220px;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Image Modal -->
+    <div class="modal" id="image-modal">
+      <span class="close-modal" id="close-modal">&times;</span>
+      <div class="modal-content">
+        <img
+          id="modal-image"
+          class="modal-image"
+          src="/placeholder.svg"
+          alt="Enlarged Image"
+        />
+      </div>
+    </div>
+
+    <!-- Center Circle Loading Animation -->
+    <div class="center-loader" id="center-loader">
+      <div class="center-loader-content">
+        <div class="center-circle">
+          <div class="center-circle-outer"></div>
+          <div class="center-circle-middle"></div>
+          <div class="center-circle-inner"></div>
+        </div>
+        <div class="center-loader-text" id="center-loader-text">
+          Loading Patient Data
+        </div>
+        <div class="center-loader-subtext" id="center-loader-subtext">
+          Retrieving your patient information and analysis results...
+        </div>
+        <div class="center-progress">
+          <div class="center-progress-bar" id="center-progress-bar"></div>
+        </div>
+        <div class="center-percentage" id="center-percentage">0%</div>
+      </div>
+    </div>
+
+    <!-- Navbar Section -->
+    <nav>
+      <div class="nav-left">
+        <button id="logout-btn" class="nav-logout-btn" onclick="handleLogout()">
+          <i class="fas fa-power-off"></i>
+          <span data-i18n="logout">Logout</span>
+        </button>
+        <div class="language-switcher">
+          <button
+            id="en-btn"
+            class="language-btn active"
+            onclick="changeLanguage('en')"
+          >
+            EN
+          </button>
+          <button
+            id="ar-btn"
+            class="language-btn"
+            onclick="changeLanguage('ar')"
+          >
+            AR
+          </button>
+        </div>
+      </div>
+      <div class="nav-right">
+        <h1 data-i18n="title">Liver Cancer Detection AI</h1>
+        <img src="./styleimages/logo.avif" alt="Logo" />
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <!-- Patient Status Card -->
+      <div class="status-card">
+        <div class="status-header">
+          <h2 class="status-title" data-i18n="patient-status">
+            Patient Status
+          </h2>
+        </div>
+
+        <!-- Patient Info Section -->
+        <div class="patient-info">
+          <div class="info-card">
+            <div class="info-title">
+              <i class="fas fa-user"></i>
+              <span data-i18n="personal-info">Personal Information</span>
+            </div>
+            <div class="info-content">
+              <div class="info-item">
+                <div class="info-label" data-i18n="name">Name:</div>
+                <div class="info-value" id="patient-name">Loading...</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label" data-i18n="age">Age:</div>
+                <div class="info-value" id="patient-age">Loading...</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label" data-i18n="email">Email:</div>
+                <div class="info-value" id="patient-email">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest Analysis Section -->
+        <div class="analysis-section">
+          <div class="section-title">
+            <i class="fas fa-chart-line"></i>
+            <span data-i18n="latest-analysis">Latest Analysis</span>
+          </div>
+          <div class="analysis-grid" id="analysis-grid">
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Images Section -->
+        <div class="images-section">
+          <div class="section-title">
+            <i class="fas fa-images"></i>
+            <span data-i18n="recent-images">Recent Images</span>
+          </div>
+          <div class="images-grid" id="images-grid">
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="action-btn primary-btn" onclick="goToUploadPage()">
+          <i class="fas fa-upload"></i>
+          <span data-i18n="upload-new">Upload New Image</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+      <p data-i18n="footer-text">
+        © 2024 Liver Cancer Detection AI. Our goal is to assist in the early
+        detection of liver cancer, providing a powerful tool for patients and
+        doctors alike.
+      </p>
+      <p>
+        <span data-i18n="contact-text">Contact us at:</span>
+        <a href="mailto:livercancerdetectionai@gmail.com"
+          >livercancerdetectionai@gmail.com</a
+        >
+      </p>
+    </footer>
+
+    <script>
+      // Language translations
+      const translations = {
+        en: {
+          title: "Liver Cancer Detection AI",
+          logout: "Logout",
+          "patient-status": "Patient Status",
+          "personal-info": "Personal Information",
+          name: "Name:",
+          age: "Age:",
+          email: "Email:",
+          "latest-analysis": "Latest Analysis",
+          "recent-images": "Recent Images",
+          "upload-new": "Upload New Image",
+          "view-analysis": "View Analysis Results",
+          "footer-text":
+            "© 2024 Liver Cancer Detection AI. Our goal is to assist in the early detection of liver cancer, providing a powerful tool for patients and doctors alike.",
+          "contact-text": "Contact us at:",
+          "analysis-date": "Analysis Date:",
+          "cancer-stage": "Cancer Stage:",
+          "tumor-size": "Tumor Size:",
+          "tumor-area": "Tumor Area:",
+          "original-image": "Original Image",
+          "predicted-mask": "Predicted Mask",
+          "no-analysis": "No analysis data available",
+          "no-images": "No images available",
+          "stage-0": "Stage 0 (No Cancer)",
+          "stage-1": "Stage 1 (Early)",
+          "stage-2": "Stage 2 (Intermediate)",
+          "stage-3": "Stage 3 (Advanced)",
+          "stage-4": "Stage 4 (Late)",
+          "loading-error": "Error loading data. Please try again.",
+          "auth-error": "Authentication error. Please login again.",
+          "loading-data": "Loading Patient Data",
+          "retrieving-data":
+            "Retrieving your patient information and analysis results...",
+          cm2: "cm²",
+          pixels: "pixels",
+          "no-tumor-detected": "No tumor detected",
+          male: "Male",
+          female: "Female",
+          none: "None",
+        },
+        ar: {
+          title: "الذكاء الاصطناعي للكشف عن سرطان الكبد",
+          logout: "تسجيل الخروج",
+          "patient-status": "حالة المريض",
+          "personal-info": "المعلومات الشخصية",
+          name: "الاسم:",
+          age: "العمر:",
+          email: "البريد الإلكتروني:",
+          "latest-analysis": "آخر تحليل",
+          "recent-images": "الصور الحديثة",
+          "upload-new": "تحميل صورة جديدة",
+          "view-analysis": "عرض نتائج التحليل",
+          "footer-text":
+            "© 2024 الذكاء الاصطناعي للكشف عن سرطان الكبد. هدفنا هو المساعدة في الكشف المبكر عن سرطان الكبد، وتوفير أداة قوية للمرضى والأطباء على حد سواء.",
+          "contact-text": "تواصل معنا على:",
+          "analysis-date": "تاريخ التحليل:",
+          "cancer-stage": "مرحلة السرطان:",
+          "tumor-size": "حجم الورم:",
+          "tumor-area": "مساحة الورم:",
+          "original-image": "الصورة الأصلية",
+          "predicted-mask": "القناع المتوقع",
+          "no-analysis": "لا توجد بيانات تحليل متاحة",
+          "no-images": "لا توجد صور متاحة",
+          "stage-0": "المرحلة 0 (لا يوجد سرطان)",
+          "stage-1": "المرحلة 1 (مبكر)",
+          "stage-2": "المرحلة 2 (متوسط)",
+          "stage-3": "المرحلة 3 (متقدم)",
+          "stage-4": "المرحلة 4 (متأخر)",
+          "loading-error": "خطأ في تحميل البيانات. يرجى المحاولة مرة أخرى.",
+          "auth-error": "خطأ في المصادقة. يرجى تسجيل الدخول مرة أخرى.",
+          "loading-data": "تحميل بيانات المريض",
+          "retrieving-data":
+            "جاري استرجاع معلومات المريض ونتائج التحليل الخاصة بك...",
+          cm2: "سم²",
+          pixels: "بكسل",
+          "no-tumor-detected": "لم يتم اكتشاف ورم",
+          male: "ذكر",
+          female: "أنثى",
+          none: "لا يوجد",
+        },
+      };
+
+      // Current language
+      let currentLanguage = "en";
+
+      // Function to change language
+      function changeLanguage(lang) {
+        currentLanguage = lang;
+
+        // Update active button state
+        document
+          .getElementById("en-btn")
+          .classList.toggle("active", lang === "en");
+        document
+          .getElementById("ar-btn")
+          .classList.toggle("active", lang === "ar");
+
+        // Update page direction
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+
+        // Update all text elements with translations
+        const elements = document.querySelectorAll("[data-i18n]");
+        elements.forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          if (translations[lang][key]) {
+            element.textContent = translations[lang][key];
+          }
+        });
+
+        // Update loader text
+        document.getElementById("center-loader-text").textContent =
+          translations[lang]["loading-data"];
+        document.getElementById("center-loader-subtext").textContent =
+          translations[lang]["retrieving-data"];
+
+        // Save language preference
+        localStorage.setItem("preferredLanguage", lang);
+
+        // Reload patient data to update translated content
+        loadPatientData();
+      }
+
+      // Function to open image modal
+      function openImageModal(imageSrc) {
+        const modal = document.getElementById("image-modal");
+        const modalImage = document.getElementById("modal-image");
+
+        modalImage.src = imageSrc;
+        modal.classList.add("active");
+      }
+
+      // Function to close image modal
+      function closeImageModal() {
+        const modal = document.getElementById("image-modal");
+        modal.classList.remove("active");
+      }
+
+      // Function to update center loader progress
+      function updateCenterLoaderProgress(percent) {
+        const progressBar = document.getElementById("center-progress-bar");
+        const percentageText = document.getElementById("center-percentage");
+
+        progressBar.style.width = `${percent}%`;
+        percentageText.textContent = `${percent}%`;
+      }
+
+      // Function to format date
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString(
+          currentLanguage === "en" ? "en-US" : "ar-SA",
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        );
+      }
+
+      // Function to get stage text based on stage number
+      function getStageText(stageNumber) {
+        const stageKey = `stage-${stageNumber}`;
+        return (
+          translations[currentLanguage][stageKey] || `Stage ${stageNumber}`
+        );
+      }
+
+      // Function to extract stage number from cancer stage text
+      function extractStageNumber(cancerStage) {
+        if (!cancerStage) return 0;
+
+        const stageText = cancerStage.toLowerCase();
+
+        if (stageText.includes("stage 0") || stageText.includes("stage0"))
+          return 0;
+        if (
+          stageText.includes("stage 1") ||
+          stageText.includes("stage i") ||
+          stageText.includes("stage1")
+        )
+          return 1;
+        if (
+          stageText.includes("stage 2") ||
+          stageText.includes("stage ii") ||
+          stageText.includes("stage2")
+        )
+          return 2;
+        if (
+          stageText.includes("stage 3") ||
+          stageText.includes("stage iii") ||
+          stageText.includes("stage3")
+        )
+          return 3;
+        if (
+          stageText.includes("stage 4") ||
+          stageText.includes("stage iv") ||
+          stageText.includes("stage4")
+        )
+          return 4;
+
+        return 0;
+      }
+
+      // Function to load patient data
+      function loadPatientData() {
+        const token = localStorage.getItem("authToken");
+        const patientId = localStorage.getItem("patientId");
+
+        if (!token || !patientId) {
+          alert(translations[currentLanguage]["auth-error"]);
+          window.location.href = "login.html";
+          return;
+        }
+
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(25);
+
+        // Load patient info
+        fetch(`${BACKEND_NGROK.API}/api/patient/${patientId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch patient data");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Update patient info
+            document.getElementById("patient-name").textContent =
+              data.name || "N/A";
+            document.getElementById("patient-age").textContent =
+              data.age || "N/A";
+            document.getElementById("patient-email").textContent =
+              data.email || "N/A";
+
+            updateCenterLoaderProgress(50);
+          })
+          .catch((error) => {
+            console.error("Error loading patient data:", error);
+            document.getElementById("center-loader").classList.remove("active");
+          });
+
+        // Load latest analysis
+        fetch(
+          `${BACKEND_NGROK.API}/api/patient/uploadimage/${patientId}/ai-response`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch analysis data");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            updateCenterLoaderProgress(75);
+
+            const analysisGrid = document.getElementById("analysis-grid");
+            const imagesGrid = document.getElementById("images-grid");
+
+            // Clear loading spinners
+            analysisGrid.innerHTML = "";
+            imagesGrid.innerHTML = "";
+
+            if (data.aiResponse) {
+              const aiResponse = data.aiResponse;
+              const analysisDate = data.createdAt || new Date().toISOString();
+              const stageNumber = extractStageNumber(aiResponse.cancerStage);
+
+              // Get tumor metrics with fallbacks
+              const tumorSize =
+                aiResponse.tumorSizeCm2 !== undefined
+                  ? aiResponse.tumorSizeCm2
+                  : aiResponse.tumor_size_cm2 !== undefined
+                  ? aiResponse.tumor_size_cm2
+                  : null;
+
+              const tumorArea =
+                aiResponse.tumorAreaPixels !== undefined
+                  ? aiResponse.tumorAreaPixels
+                  : aiResponse.tumor_area_pixels !== undefined
+                  ? aiResponse.tumor_area_pixels
+                  : null;
+
+              // Create analysis card
+              const analysisCard = document.createElement("div");
+              analysisCard.className = "analysis-card";
+              analysisCard.innerHTML = `
+            <div class="analysis-header">
+              <div class="analysis-title">
+                <i class="fas fa-chart-line"></i>
+                <span data-i18n="latest-analysis">
+                  ${translations[currentLanguage]["latest-analysis"]}
+                </span>
+              </div>
+              <div class="analysis-date">${formatDate(analysisDate)}</div>
+            </div>
+            <div class="analysis-content">
+              <div class="analysis-item">
+                <div class="analysis-label" data-i18n="cancer-stage">
+                  ${translations[currentLanguage]["cancer-stage"]}
+                </div>
+                <div class="analysis-value stage">
+                  <span class="stage-indicator stage-${stageNumber}"></span>
+                  ${getStageText(stageNumber)}
+                </div>
+              </div>
+              <div class="tumor-metrics">
+                <div class="tumor-metric-item">
+                  <div class="tumor-metric-icon">
+                    <i class="fas fa-ruler-combined"></i>
+                  </div>
+                  <div class="tumor-metric-label" data-i18n="tumor-size">
+                    ${translations[currentLanguage]["tumor-size"]}
+                  </div>
+                  <div class="tumor-metric-value">
+                    ${
+                      tumorSize !== null && tumorSize !== undefined
+                        ? typeof tumorSize === "number"
+                          ? tumorSize.toFixed(2)
+                          : tumorSize.toString()
+                        : translations[currentLanguage]["no-tumor-detected"]
+                    }
+                  </div>
+                  ${
+                    tumorSize !== null && tumorSize !== undefined
+                      ? `<div class="tumor-metric-unit" data-i18n="cm2">
+                         ${translations[currentLanguage]["cm2"]}
+                       </div>`
+                      : ""
+                  }
+                </div>
+                <div class="tumor-metric-item">
+                  <div class="tumor-metric-icon">
+                    <i class="fas fa-th"></i>
+                  </div>
+                  <div class="tumor-metric-label" data-i18n="tumor-area">
+                    ${translations[currentLanguage]["tumor-area"]}
+                  </div>
+                  <div class="tumor-metric-value">
+                    ${
+                      tumorArea !== null && tumorArea !== undefined
+                        ? typeof tumorArea === "number"
+                          ? tumorArea.toLocaleString()
+                          : tumorArea.toString()
+                        : translations[currentLanguage]["no-tumor-detected"]
+                    }
+                  </div>
+                  ${
+                    tumorArea !== null && tumorArea !== undefined
+                      ? `<div class="tumor-metric-unit" data-i18n="pixels">
+                         ${translations[currentLanguage]["pixels"]}
+                       </div>`
+                      : ""
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+              analysisGrid.appendChild(analysisCard);
+
+              // Create image cards
+              if (aiResponse.originalImage) {
+                const originalImageCard = document.createElement("div");
+                originalImageCard.className = "image-card";
+                originalImageCard.innerHTML = `
+              <div class="image-header">
+                <i class="fas fa-image"></i>
+                <span data-i18n="original-image">
+                  ${translations[currentLanguage]["original-image"]}
+                </span>
+              </div>
+              <div class="image-content">
+                <img 
+                  src="data:image/png;base64,${aiResponse.originalImage}" 
+                  alt="Original Image"
+                  onclick="openImageModal(this.src)"
+                />
+              </div>
+            `;
+                imagesGrid.appendChild(originalImageCard);
+              }
+
+              if (aiResponse.predictedMask) {
+                const maskImageCard = document.createElement("div");
+                maskImageCard.className = "image-card";
+                maskImageCard.innerHTML = `
+              <div class="image-header">
+                <i class="fas fa-layer-group"></i>
+                <span data-i18n="predicted-mask">
+                  ${translations[currentLanguage]["predicted-mask"]}
+                </span>
+              </div>
+              <div class="image-content">
+                <img 
+                  src="data:image/png;base64,${aiResponse.predictedMask}" 
+                  alt="Predicted Mask"
+                  onclick="openImageModal(this.src)"
+                />
+              </div>
+            `;
+                imagesGrid.appendChild(maskImageCard);
+              }
+            } else {
+              // No analysis data
+              analysisGrid.innerHTML = `
+            <div class="no-data" data-i18n="no-analysis">
+              ${translations[currentLanguage]["no-analysis"]}
+            </div>
+          `;
+              imagesGrid.innerHTML = `
+            <div class="no-data" data-i18n="no-images">
+              ${translations[currentLanguage]["no-images"]}
+            </div>
+          `;
+            }
+
+            updateCenterLoaderProgress(100);
+            setTimeout(() => {
+              document
+                .getElementById("center-loader")
+                .classList.remove("active");
+            }, 500);
+          })
+          .catch((error) => {
+            console.error("Error loading analysis data:", error);
+            document.getElementById("analysis-grid").innerHTML = `
+          <div class="no-data" data-i18n="loading-error">
+            ${translations[currentLanguage]["loading-error"]}
+          </div>
+        `;
+            document.getElementById("images-grid").innerHTML = `
+          <div class="no-data" data-i18n="loading-error">
+            ${translations[currentLanguage]["loading-error"]}
+          </div>
+        `;
+            document.getElementById("center-loader").classList.remove("active");
+          });
+      }
+
+      // Function to navigate to upload page
+      function goToUploadPage() {
+        if (sessionStorage.getItem("redirecting") === "true") {
+          return;
+        }
+
+        sessionStorage.setItem("redirecting", "true");
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(50);
+
+        const timestamp = new Date().getTime();
+        console.log("Navigating to upload page at:", new Date().toISOString());
+
+        setTimeout(() => {
+          window.location.href = `aiweb.html?t=${timestamp}`;
+        }, 1000);
+      }
+
+      // Function to navigate to analysis result page
+      function goToAnalysisResult() {
+        if (sessionStorage.getItem("redirecting") === "true") {
+          return;
+        }
+
+        sessionStorage.setItem("redirecting", "true");
+        document.getElementById("center-loader").classList.add("active");
+        updateCenterLoaderProgress(50);
+
+        const timestamp = new Date().getTime();
+        console.log(
+          "Navigating to analysis result page at:",
+          new Date().toISOString()
+        );
+
+        setTimeout(() => {
+          window.location.href = `analysis-result.html?t=${timestamp}`;
+        }, 1000);
+      }
+
+      // Function to handle logout
+      function handleLogout() {
+        const loader = document.getElementById("center-loader");
+        loader.classList.add("active");
+        updateCenterLoaderProgress(30);
+
+        const authToken = localStorage.getItem("authToken");
+
+        if (!authToken) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        fetch(`${BACKEND_NGROK.API}/api/patient/logout`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("patientId");
+            updateCenterLoaderProgress(100);
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 800);
+          })
+          .catch((error) => {
+            console.error("Logout error:", error);
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("patientId");
+            window.location.href = "login.html";
+          });
+      }
+
+      // On page load
+      window.onload = function () {
+        console.log("Patient Status page loaded");
+        sessionStorage.removeItem("redirecting");
+
+        // Set up modal close button
+        document
+          .getElementById("close-modal")
+          .addEventListener("click", closeImageModal);
+
+        // Load saved language preference
+        const savedLanguage = localStorage.getItem("preferredLanguage");
+        if (savedLanguage) {
+          changeLanguage(savedLanguage);
+        } else {
+          // Load patient data if no language preference is saved
+          loadPatientData();
+        }
+      };
+    </script>
+  </body>
+</html>

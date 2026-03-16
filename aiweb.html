@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liver Cancer Detection AI</title>
+    <link rel="icon" href="./styleimages/logo.avif" type="image/x-icon" />
+    <!-- Modern Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="app-config.js"></script>
+
+    <style>
+      /* Basic Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Body Styling */
+      body {
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(135deg, #121212, #1a1a1a);
+        color: #e0e0e0;
+        line-height: 1.8;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+      }
+
+      /* RTL Support */
+      body[dir="rtl"] .nav-left {
+        flex-direction: row-reverse;
+      }
+
+      body[dir="rtl"] .nav-right {
+        flex-direction: row-reverse;
+      }
+
+      body[dir="rtl"] .nav-logout-btn i {
+        margin-left: 0;
+        margin-right: 8px;
+      }
+
+      body[dir="rtl"] nav img {
+        margin-left: 0;
+        margin-right: 15px;
+      }
+
+      /* Navbar Styling */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(18, 18, 18, 0.8);
+        padding: 15px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: fadeInDown 0.8s ease-out 0.2s forwards;
+      }
+
+      @keyframes fadeInDown {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+      }
+
+      nav img {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        margin-left: 15px;
+      }
+
+      nav img:hover {
+        transform: rotate(360deg);
+      }
+
+      nav h1 {
+        color: #00bcd4;
+        font-family: "Orbitron", sans-serif;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      nav h1:hover {
+        color: #6a1b9a;
+        text-shadow: 0 0 10px rgba(106, 27, 154, 0.5);
+      }
+
+      /* Language Switcher */
+      .language-switcher {
+        display: flex;
+        align-items: center;
+        background-color: rgba(0, 188, 212, 0.1);
+        border-radius: 50px;
+        padding: 5px;
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .language-switcher:hover {
+        background-color: rgba(0, 188, 212, 0.2);
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+      }
+
+      .language-btn {
+        background: transparent;
+        border: none;
+        color: #e0e0e0;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+      }
+
+      .language-btn.active {
+        background-color: #00bcd4;
+        color: #121212;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .language-btn:hover:not(.active) {
+        color: #00bcd4;
+      }
+
+      /* Navbar Logout Button Styling */
+      .nav-logout-btn {
+        padding: 8px 16px;
+        font-size: 16px;
+        background-color: transparent;
+        color: #00bcd4;
+        border: 2px solid #00bcd4;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        font-family: "Roboto", sans-serif;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nav-logout-btn i {
+        transition: transform 0.3s ease;
+      }
+
+      .nav-logout-btn:hover {
+        background-color: #00bcd4;
+        color: #121212;
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
+      }
+
+      .nav-logout-btn:hover i {
+        transform: rotate(360deg);
+      }
+
+      /* Form Container Styling */
+      .form-container {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 60px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        max-width: 800px;
+        width: 90%;
+        margin: 60px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        border: 1px solid rgba(0, 188, 212, 0.2);
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease-out 0.5s forwards;
+        transition: transform 0.3s ease, box-shadow 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      .form-container:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 188, 212, 0.2),
+          0 0 50px rgba(0, 188, 212, 0.1);
+        border-color: rgba(0, 188, 212, 0.5);
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form-container h2 {
+        text-align: center;
+        color: #00bcd4;
+        margin-bottom: 30px;
+        font-size: 32px;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 0.8s forwards;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Upload Section Styling */
+      .upload-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 30px;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1s forwards;
+      }
+
+      .upload-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px dashed #00bcd4;
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .upload-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(0, 188, 212, 0.1) 0%,
+          transparent 70%
+        );
+        opacity: 0;
+        transform: scale(0.5);
+        transition: transform 0.6s ease, opacity 0.6s ease;
+      }
+
+      .upload-card:hover::before {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .upload-card:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #6a1b9a;
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 10px 20px rgba(0, 188, 212, 0.3);
+      }
+
+      .upload-card i {
+        font-size: 48px;
+        color: #00bcd4;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .upload-card:hover i {
+        color: #6a1b9a;
+        transform: scale(1.1) translateY(-5px);
+      }
+
+      .upload-card p {
+        font-size: 18px;
+        color: #e0e0e0;
+        margin: 0;
+      }
+
+      /* Hide Input Field */
+      #xray-file {
+        display: none;
+      }
+
+      /* Image Preview Styling */
+      #image-preview-container {
+        position: relative;
+        margin-top: 20px;
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        display: none;
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
+      #image-preview-container.visible {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      #image-preview {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        border: 2px solid #00bcd4;
+        border-radius: 10px;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      #image-preview:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(0, 188, 212, 0.4);
+      }
+
+      /* Button Container Styling */
+      .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 25px;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.2s forwards;
+      }
+
+      /* General Button Styling */
+      button {
+        padding: 12px 24px;
+        font-size: 18px;
+        background-color: #00bcd4;
+        color: #121212;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        position: relative;
+        overflow: hidden;
+        font-family: "Roboto", sans-serif;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
+      }
+
+      button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+
+      button:hover::before {
+        left: 100%;
+      }
+
+      button:hover {
+        background-color: #6a1b9a;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 7px 15px rgba(106, 27, 154, 0.4);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      button:disabled {
+        background-color: #607d8b;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      button:disabled::before {
+        display: none;
+      }
+
+      /* Status Message Styling */
+      #status-message {
+        margin-top: 25px;
+        text-align: center;
+        color: #00bcd4;
+        font-weight: bold;
+        min-height: 24px;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.4s forwards;
+        position: relative;
+        padding: 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      #status-message.loading {
+        background-color: rgba(0, 188, 212, 0.1);
+      }
+
+      #status-message.success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: #4caf50;
+      }
+
+      #status-message.error {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+      }
+
+      /* Loading Animation */
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(0, 188, 212, 0.3);
+        border-radius: 50%;
+        border-top-color: #00bcd4;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Footer Styling */
+      footer {
+        background: rgba(18, 18, 18, 0.8);
+        color: #e0e0e0;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 18px;
+        border-top: 3px solid #00bcd4;
+        backdrop-filter: blur(10px);
+        width: 100%;
+        margin-top: auto;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 1.6s forwards;
+      }
+
+      footer p {
+        margin: 10px 0;
+      }
+
+      footer a {
+        color: #00bcd4;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      footer a:hover {
+        color: #6a1b9a;
+        text-shadow: 0 0 5px rgba(106, 27, 154, 0.5);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .form-container {
+          padding: 40px 20px;
+          width: 95%;
+        }
+
+        .form-container h2 {
+          font-size: 26px;
+        }
+
+        .upload-card {
+          padding: 30px;
+        }
+
+        .upload-card i {
+          font-size: 36px;
+        }
+
+        .button-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        button {
+          width: 100%;
+          max-width: 250px;
+        }
+
+        nav h1 {
+          font-size: 22px;
+        }
+
+        .nav-logout-btn {
+          padding: 6px 12px;
+          font-size: 14px;
+        }
+
+        .language-switcher {
+          padding: 3px;
+        }
+
+        .language-btn {
+          padding: 4px 8px;
+          font-size: 14px;
+        }
+      }
+
+      /* Pulse Animation for Upload Button */
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(0, 188, 212, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
+        }
+      }
+
+      #upload-analyze-btn {
+        animation: pulse 2s infinite;
+      }
+
+      /* Page Transition Animation */
+      .page-transition {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #121212;
+        z-index: 9999;
+        transform: translateY(100%);
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .page-transition.active {
+        transform: translateY(0);
+      }
+
+      .page-transition.exit {
+        transform: translateY(-100%);
+      }
+
+      /* Center Circle Loading Animation */
+      .center-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(18, 18, 18, 0.9);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .center-loader.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .center-loader-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .center-circle {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        margin-bottom: 30px;
+      }
+
+      .center-circle-outer {
+        width: 100%;
+        height: 100%;
+        border: 6px solid rgba(0, 188, 212, 0.1);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+      }
+
+      .center-circle-middle {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
+        border: 6px solid rgba(106, 27, 154, 0.1);
+        border-top-color: #6a1b9a;
+        border-radius: 50%;
+        animation: spin 2s linear infinite reverse;
+      }
+
+      .center-circle-inner {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        width: calc(100% - 60px);
+        height: calc(100% - 60px);
+        border: 6px solid rgba(0, 188, 212, 0.2);
+        border-top-color: #00bcd4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .center-loader-text {
+        color: #00bcd4;
+        font-size: 28px;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        margin-bottom: 15px;
+      }
+
+      .center-loader-subtext {
+        color: #e0e0e0;
+        font-size: 18px;
+        max-width: 80%;
+        margin: 0 auto 20px;
+      }
+
+      .center-progress {
+        width: 250px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+
+      .center-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #00bcd4, #6a1b9a);
+        border-radius: 3px;
+        transition: width 0.5s ease;
+      }
+
+      .center-percentage {
+        color: #e0e0e0;
+        font-size: 16px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Page Transition Element -->
+    <div class="page-transition" id="page-transition"></div>
+
+    <!-- Center Circle Loading Animation -->
+    <div class="center-loader" id="center-loader">
+      <div class="center-loader-content">
+        <div class="center-circle">
+          <div class="center-circle-outer"></div>
+          <div class="center-circle-middle"></div>
+          <div class="center-circle-inner"></div>
+        </div>
+        <div class="center-loader-text" id="center-loader-text">
+          Preparing Image
+        </div>
+        <div class="center-loader-subtext" id="center-loader-subtext">
+          Getting your image ready for AI analysis...
+        </div>
+        <div class="center-progress">
+          <div class="center-progress-bar" id="center-progress-bar"></div>
+        </div>
+        <div class="center-percentage" id="center-percentage">0%</div>
+      </div>
+    </div>
+
+    <!-- Navbar Section -->
+    <nav>
+      <div class="nav-left">
+        <button id="logout-btn" class="nav-logout-btn" onclick="handleLogout()">
+          <i class="fas fa-power-off"></i>
+          <span data-i18n="logout">Logout</span>
+        </button>
+        <div class="language-switcher">
+          <button
+            id="en-btn"
+            class="language-btn active"
+            onclick="changeLanguage('en')"
+          >
+            EN
+          </button>
+          <button
+            id="ar-btn"
+            class="language-btn"
+            onclick="changeLanguage('ar')"
+          >
+            AR
+          </button>
+        </div>
+      </div>
+      <div class="nav-right">
+        <h1 data-i18n="title">Liver Cancer Detection AI</h1>
+        <img src="./styleimages/logo.avif" alt="Logo" />
+      </div>
+    </nav>
+
+    <!-- Form Section -->
+    <div class="form-container">
+      <h2 data-i18n="upload-title">Upload Image for AI Analysis</h2>
+
+      <!-- Use an actual form element for more reliable submissions -->
+      <form id="upload-form" method="post" enctype="multipart/form-data">
+        <!-- Hidden inputs for authentication -->
+        <input type="hidden" id="patient-id" name="patient_id" value="" />
+        <input type="hidden" id="auth-token" name="auth_token" value="" />
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+          <div
+            class="upload-card"
+            onclick="document.getElementById('xray-file').click();"
+          >
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p data-i18n="upload-text">Click to Upload Image for Analysis</p>
+          </div>
+          <!-- File Input -->
+          <input
+            type="file"
+            id="xray-file"
+            name="xray-file"
+            accept="image/*"
+            required
+            onchange="showImagePreview();"
+          />
+        </div>
+
+        <!-- Image Preview Section -->
+        <div id="image-preview-container">
+          <img id="image-preview" alt="Selected Image Preview" />
+        </div>
+
+        <!-- Button Container -->
+        <div class="button-container">
+          <button
+            type="button"
+            id="upload-analyze-btn"
+            onclick="handleFormSubmit(event)"
+          >
+            <span data-i18n="analyze-btn">Send To Analyze</span>
+          </button>
+          <button type="button" id="new-upload-btn" onclick="resetImage()">
+            <span data-i18n="new-image-btn">Select New Image</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Status message -->
+      <div id="status-message"></div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+      <p data-i18n="footer-text">
+        © 2024 Liver Cancer Detection AI. Our goal is to assist in the early
+        detection of liver cancer, providing a powerful tool for patients and
+        doctors alike.
+      </p>
+      <p>
+        <span data-i18n="contact-text">Contact us at:</span>
+        <a href="mailto:livercancerdetectionai@gmail.com"
+          >livercancerdetectionai@gmail.com</a
+        >
+      </p>
+    </footer>
+
+    console.error("Logout error:", error); // Clear local storage anyway
+    localStorage.removeItem("authToken");
+    <script>
+      // Global variable to prevent multiple submissions
+      let isSubmitting = false;
+
+      // Language translations
+      const translations = {
+        en: {
+          title: "Liver Cancer Detection AI",
+          logout: "Logout",
+          "upload-title": "Upload Image for AI Analysis",
+          "upload-text": "Click to Upload Image for Analysis",
+          "analyze-btn": "Send To Analyze",
+          "new-image-btn": "Select New Image",
+          "footer-text":
+            "© 2024 Liver Cancer Detection AI. Our goal is to assist in the early detection of liver cancer, providing a powerful tool for patients and doctors alike.",
+          "contact-text": "Contact us at:",
+          "preparing-image": "Preparing image...",
+          "select-image": "Please select an image.",
+          "error-reading": "Error reading the image file.",
+          "preparing-image-text": "Preparing Image",
+          "getting-ready": "Getting your image ready for AI analysis...",
+          "uploading-image": "Uploading Image",
+          "sending-image": "Sending your image to our secure servers...",
+          "preparing-analysis": "Preparing Analysis",
+          "ready-analysis": "Getting ready to analyze your image...",
+          "ready-for-analysis": "Ready for Analysis",
+          redirecting: "Redirecting to results page...",
+          "logging-out": "Logging Out",
+          "ending-session": "Securely ending your session...",
+          "logout-complete": "Logout Complete",
+          "redirect-login": "Redirecting to login page...",
+          "network-error": "A network error occurred. Please try again.",
+        },
+        ar: {
+          title: "الذكاء الاصطناعي للكشف عن سرطان الكبد",
+          logout: "تسجيل الخروج",
+          "upload-title": "تحميل صورة للتحليل بالذكاء الاصطناعي",
+          "upload-text": "انقر لتحميل صورة للتحليل",
+          "analyze-btn": "إرسال للتحليل",
+          "new-image-btn": "اختيار صورة جديدة",
+          "footer-text":
+            "© 2024 الذكاء الاصطناعي للكشف عن سرطان الكبد. هدفنا هو المساعدة في الكشف المبكر عن سرطان الكبد، وتوفير أداة قوية للمرضى والأطباء على حد سواء.",
+          "contact-text": "تواصل معنا على:",
+          "preparing-image": "جاري تحضير الصورة...",
+          "select-image": "الرجاء اختيار صورة.",
+          "error-reading": "خطأ في قراءة ملف الصورة.",
+          "preparing-image-text": "تحضير الصورة",
+          "getting-ready": "جاري تجهيز صورتك للتحليل بالذكاء الاصطناعي...",
+          "uploading-image": "تحميل الصورة",
+          "sending-image": "إرسال صورتك إلى خوادمنا الآمنة...",
+          "preparing-analysis": "تحضير ��لتحليل",
+          "ready-analysis": "الاستعداد لتحليل صورتك...",
+          "ready-for-analysis": "جاهز للتحليل",
+          redirecting: "جاري التحويل إلى صفحة النتائج...",
+          "logging-out": "تسجيل الخروج",
+          "ending-session": "إنهاء جلستك بشكل آمن...",
+          "logout-complete": "اكتمل تسجيل الخروج",
+          "redirect-login": "جاري التحويل إلى صفحة تسجيل الدخول...",
+          "network-error": "حدث خطأ في الشبكة. يرجى المحاولة مرة أخرى.",
+        },
+      };
+
+      // Current language
+      let currentLanguage = "en";
+
+      // Function to change language
+      function changeLanguage(lang) {
+        currentLanguage = lang;
+
+        // Update active button state
+        document
+          .getElementById("en-btn")
+          .classList.toggle("active", lang === "en");
+        document
+          .getElementById("ar-btn")
+          .classList.toggle("active", lang === "ar");
+
+        // Update page direction
+        document.documentElement.lang = lang;
+        document.body.dir = lang === "ar" ? "rtl" : "ltr";
+
+        // Update all text elements with translations
+        const elements = document.querySelectorAll("[data-i18n]");
+        elements.forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          if (translations[lang][key]) {
+            element.textContent = translations[lang][key];
+          }
+        });
+
+        // Save language preference
+        localStorage.setItem("preferredLanguage", lang);
+      }
+
+      // Set the patient ID when the page loads
+      window.onload = () => {
+        // Clear all previous session data to prevent issues
+        sessionStorage.removeItem("uploadComplete");
+        sessionStorage.removeItem("imageData");
+        sessionStorage.removeItem("uploadPending");
+        sessionStorage.removeItem("processingImage");
+        sessionStorage.removeItem("redirecting");
+
+        // Reset submission flag
+        isSubmitting = false;
+
+        // Add entrance animation
+        document.getElementById("page-transition").classList.add("active");
+        setTimeout(() => {
+          document.getElementById("page-transition").classList.add("exit");
+        }, 300);
+
+        const patientId = localStorage.getItem("patientId");
+        const authToken = localStorage.getItem("authToken");
+
+        if (patientId && authToken) {
+          document.getElementById("patient-id").value = patientId;
+          document.getElementById("auth-token").value = authToken;
+          console.log(`Authentication found. Patient ID: ${patientId}`);
+        } else {
+          console.log("WARNING: No authentication token or patient ID found!");
+          alert("Please login first.");
+          window.location.href = "login.html";
+        }
+
+        // Load saved language preference
+        const savedLanguage = localStorage.getItem("preferredLanguage");
+        if (savedLanguage) {
+          changeLanguage(savedLanguage);
+        }
+      };
+
+      function showImagePreview() {
+        const fileInput = document.getElementById("xray-file");
+        const uploadCard = document.querySelector(".upload-card");
+        const imagePreviewContainer = document.getElementById(
+          "image-preview-container"
+        );
+        const imagePreview = document.getElementById("image-preview");
+
+        if (fileInput.files && fileInput.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadCard.style.display = "none";
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = "block";
+
+            // Add animation class after a small delay
+            setTimeout(() => {
+              imagePreviewContainer.classList.add("visible");
+            }, 50);
+
+            console.log(`Image selected: ${fileInput.files[0].name}`);
+          };
+          reader.readAsDataURL(fileInput.files[0]);
+        }
+      }
+
+      function resetImage() {
+        const fileInput = document.getElementById("xray-file");
+        fileInput.value = ""; // Clear the file input
+        const uploadCard = document.querySelector(".upload-card");
+        const imagePreviewContainer = document.getElementById(
+          "image-preview-container"
+        );
+        const imagePreview = document.getElementById("image-preview");
+
+        // Reset image preview
+        imagePreview.src = "";
+        imagePreviewContainer.classList.remove("visible");
+        imagePreviewContainer.style.display = "none";
+
+        // Reset upload card
+        uploadCard.style.display = "block";
+
+        // Reset status message
+        const statusMessage = document.getElementById("status-message");
+        statusMessage.textContent = "";
+        statusMessage.className = "";
+
+        // Reset the upload button
+        const uploadBtn = document.getElementById("upload-analyze-btn");
+        uploadBtn.disabled = false;
+        uploadBtn.innerHTML = `<span>${translations[currentLanguage]["analyze-btn"]}</span>`;
+
+        // Clear any cached data
+        sessionStorage.removeItem("uploadComplete");
+        sessionStorage.removeItem("imageData");
+        sessionStorage.removeItem("uploadPending");
+        sessionStorage.removeItem("processingImage");
+
+        // Reset submission flag
+        isSubmitting = false;
+      }
+
+      // Function to update the center loader progress
+      function updateCenterLoaderProgress(percent, messageKey, submessageKey) {
+        const progressBar = document.getElementById("center-progress-bar");
+        const percentageText = document.getElementById("center-percentage");
+
+        progressBar.style.width = `${percent}%`;
+        percentageText.textContent = `${percent}%`;
+
+        // Update messages
+        if (messageKey) {
+          document.getElementById("center-loader-text").textContent =
+            translations[currentLanguage][messageKey];
+        }
+        if (submessageKey) {
+          document.getElementById("center-loader-subtext").textContent =
+            translations[currentLanguage][submessageKey];
+        }
+      }
+
+      // Handle form submission with enhanced loading animation and error handling
+      function handleFormSubmit(event) {
+        if (event) {
+          event.preventDefault(); // Prevent the default form submission
+        }
+
+        // Check if already submitting
+        if (isSubmitting) {
+          console.log(
+            "Submission already in progress, ignoring duplicate request"
+          );
+          return;
+        }
+
+        // Check if already redirecting
+        if (sessionStorage.getItem("redirecting") === "true") {
+          console.log("Already redirecting, ignoring duplicate request");
+          return;
+        }
+
+        const fileInput = document.getElementById("xray-file");
+        const file = fileInput.files[0];
+        const patientId = localStorage.getItem("patientId");
+        const authToken = localStorage.getItem("authToken");
+
+        if (!file) {
+          alert(translations[currentLanguage]["select-image"]);
+          return;
+        }
+
+        if (!patientId || !authToken) {
+          alert("Authentication missing. Please login again.");
+          window.location.href = "login.html";
+          return;
+        }
+
+        // Set flags to prevent duplicate submissions
+        isSubmitting = true;
+        sessionStorage.setItem("redirecting", "true");
+
+        // Show loading state
+        const uploadBtn = document.getElementById("upload-analyze-btn");
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = `<span><div class="loading-spinner"></div>${translations[currentLanguage]["preparing-image"]}</span>`;
+
+        const statusMessage = document.getElementById("status-message");
+        statusMessage.textContent =
+          translations[currentLanguage]["preparing-image"];
+        statusMessage.className = "loading";
+
+        // Show the center loader
+        const loader = document.getElementById("center-loader");
+        loader.classList.add("active");
+
+        // Initialize loader animation
+        updateCenterLoaderProgress(10, "preparing-image-text", "getting-ready");
+
+        // Prepare form data to send to backend
+        const formData = new FormData();
+        formData.append("xray-file", file);
+
+        // Send the image to the backend
+        const xhr = new XMLHttpRequest();
+        const timestamp = new Date().getTime();
+        xhr.open(
+          "POST",
+          `${BACKEND_NGROK.API}/api/patient/uploadimage/${patientId}?t=${timestamp}`,
+          true
+        );
+        xhr.setRequestHeader("Authorization", `Bearer ${authToken}`);
+
+        xhr.onload = function () {
+          console.log("Upload response status:", xhr.status);
+          console.log("Upload response text:", xhr.responseText);
+
+          if (xhr.status >= 200 && xhr.status < 300) {
+            // Update loader progress
+            updateCenterLoaderProgress(
+              70,
+              "preparing-analysis",
+              "ready-analysis"
+            );
+
+            // Try to parse the response
+            let responseData = {};
+            try {
+              responseData = JSON.parse(xhr.responseText);
+              console.log("Parsed response data:", responseData);
+            } catch (e) {
+              console.warn("Could not parse response as JSON:", e);
+            }
+
+            // Check if analysis is pending
+            if (responseData.pendingAnalysis) {
+              console.log(
+                "Analysis is pending, will redirect to results page for polling"
+              );
+            }
+
+            // Simulate final preparation
+            setTimeout(() => {
+              updateCenterLoaderProgress(
+                90,
+                "ready-for-analysis",
+                "redirecting"
+              );
+
+              // Redirect to AnalysisResult page
+              setTimeout(() => {
+                console.log(
+                  "Redirecting to AnalysisResult.html at:",
+                  new Date().toISOString()
+                );
+                window.location.replace(`AnalysisResult.html?t=${timestamp}`);
+              }, 800);
+            }, 1000);
+          } else {
+            console.error("Upload failed:", xhr.status, xhr.statusText);
+
+            // Try to parse error response
+            let errorMessage = xhr.statusText;
+            try {
+              const errorResponse = JSON.parse(xhr.responseText);
+              if (errorResponse.message) {
+                errorMessage = errorResponse.message;
+              }
+            } catch (e) {
+              console.warn("Could not parse error response:", e);
+            }
+
+            statusMessage.textContent = "Upload failed: " + errorMessage;
+            statusMessage.className = "error";
+            loader.classList.remove("active");
+            isSubmitting = false;
+            sessionStorage.removeItem("redirecting");
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = `<span>${translations[currentLanguage]["analyze-btn"]}</span>`;
+          }
+        };
+
+        xhr.onerror = function () {
+          console.error("Network error occurred");
+          statusMessage.textContent =
+            translations[currentLanguage]["network-error"];
+          statusMessage.className = "error";
+          loader.classList.remove("active");
+          isSubmitting = false;
+          sessionStorage.removeItem("redirecting");
+          uploadBtn.disabled = false;
+          uploadBtn.innerHTML = `
+      <span>${translations[currentLanguage]["analyze-btn"]}</span>
+      <div class="error-icon">!</div>
+      `;
+        };
+
+        // Simulate upload progress
+        let progress = 10;
+        const progressInterval = setInterval(() => {
+          progress += 5;
+          if (progress >= 70) {
+            clearInterval(progressInterval);
+          } else {
+            updateCenterLoaderProgress(
+              progress,
+              "uploading-image",
+              "sending-image"
+            );
+          }
+        }, 200);
+
+        xhr.send(formData);
+      }
+
+      // Handle logout functionality
+      function handleLogout() {
+        // Show loading animation
+        const loader = document.getElementById("center-loader");
+        loader.classList.add("active");
+        updateCenterLoaderProgress(30, "logging-out", "ending-session");
+
+        // Get the auth token
+        const authToken = localStorage.getItem("authToken");
+
+        if (!authToken) {
+          // If no token, just redirect to login
+          window.location.href = "login.html";
+          return;
+        }
+
+        // Call the logout API
+        fetch(`${BACKEND_NGROK.API}/api/patient/logout`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            // Clear local storage regardless of response
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("patientId");
+
+            // Update progress
+            updateCenterLoaderProgress(
+              100,
+              "logout-complete",
+              "redirect-login"
+            );
+
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 800);
+          })
+          .catch((error) => {
+            console.error("Logout error:", error);
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("patientId");
+
+            // Redirect to login page
+            window.location.href = "login.html";
+          });
+      }
+    </script>
+  </body>
+</html>
